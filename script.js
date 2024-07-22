@@ -6,14 +6,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const filesToFetch = [
         { name: "CreamInstaller.zip", download_url: "https://github.com/pointfeev/CreamInstaller/releases/latest/download/CreamInstaller.zip" },
-
         { name: "balenaEtcher-1.19.21.Setup.exe", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon: "balenaEtcher.png" }
     ];
 
     fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`)
         .then(response => response.json())
         .then(data => {
-            const repoFiles = data.filter(file => file.name.endsWith('.exe') || file.name.endsWith('.rar'));
+            const repoFiles = data.filter(file => 
+                file.name.endsWith('.exe') || 
+                file.name.endsWith('.rar') || 
+                file.name.endsWith('.torrent')
+            );
             repoFiles.forEach(file => {
                 filesToFetch.push({ name: file.name, download_url: file.download_url });
             });
@@ -21,8 +24,8 @@ document.addEventListener("DOMContentLoaded", function() {
             const processedFiles = {};
 
             filesToFetch.forEach(file => {
-                const fileName = file.name.replace(/\.(exe|rar|zip)$/, '');
-                const parentFileName = file.parent ? file.parent.replace(/\.(exe|rar|zip)$/, '') : null;
+                const fileName = file.name.replace(/\.(exe|rar|zip|torrent)$/, '');
+                const parentFileName = file.parent ? file.parent.replace(/\.(exe|rar|zip|torrent)$/, '') : null;
 
                 if (parentFileName) {
                     if (!processedFiles[parentFileName]) {
@@ -57,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 files.forEach((file, index) => {
                     const fileLink = document.createElement("a");
                     fileLink.href = file.download_url;
-                    fileLink.innerText = file.name.replace(/\.(exe|rar|zip)$/, '');
+                    fileLink.innerText = file.name.replace(/\.(exe|rar|zip|torrent)$/, '');
                     fileLink.style.color = "white";
                     if (index > 0) {
                         fileLink.className = "nested-file";
