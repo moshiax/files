@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const filesToFetch = [
         { name: "CreamInstaller.zip", download_url: "https://github.com/pointfeev/CreamInstaller/releases/latest/download/CreamInstaller.zip" },
-        { name: "windowsdesktop-runtime-8.0.7-win-x64.exe", download_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/windowsdesktop-runtime-8.0.7-win-x64.exe", parent: "CreamInstaller.zip" },
+
         { name: "balenaEtcher-1.19.21.Setup.exe", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon: "balenaEtcher.png" }
     ];
 
