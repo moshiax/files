@@ -11,14 +11,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
             files.forEach(file => {
                 const fileName = file.name.replace('.exe', '');
-                const iconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.ico`;
+                const pngIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.png`;
+                const icoIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.ico`;
 
                 const fileItem = document.createElement("div");
                 fileItem.className = "file-item";
 
                 const fileIcon = document.createElement("img");
-                fileIcon.src = iconUrl;
-                fileIcon.onerror = () => fileIcon.src = 'default-icon-path.ico'; 
+                fileIcon.src = pngIconUrl;
+                fileIcon.onerror = () => {
+                    fileIcon.src = icoIconUrl;
+                    fileIcon.onerror = null; // Удалить обработчик ошибок после первой проверки
+                };
 
                 const fileLink = document.createElement("a");
                 fileLink.href = file.download_url;
