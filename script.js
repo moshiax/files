@@ -4,13 +4,20 @@ document.addEventListener("DOMContentLoaded", function() {
     const filePath = "exe";
     const fileListElement = document.getElementById("file-list");
 
+    const filesToFetch = [
+        { name: "CreamInstaller.zip", download_url: "https://github.com/pointfeev/CreamInstaller/releases/latest/download/CreamInstaller.zip" }
+    ];
+
     fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`)
         .then(response => response.json())
         .then(data => {
-            const files = data.filter(file => file.name.endsWith('.exe') || file.name.endsWith('.rar'));
+            const repoFiles = data.filter(file => file.name.endsWith('.exe') || file.name.endsWith('.rar'));
+            repoFiles.forEach(file => {
+                filesToFetch.push({ name: file.name, download_url: file.download_url });
+            });
 
-            files.forEach(file => {
-                const fileName = file.name.replace(/\.(exe|rar)$/, '');
+            filesToFetch.forEach(file => {
+                const fileName = file.name.replace(/\.(exe|rar|zip)$/, '');
                 const pngIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.png`;
                 const icoIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.ico`;
 
