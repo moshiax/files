@@ -18,15 +18,17 @@ document.addEventListener("DOMContentLoaded", function() {
                 fileItem.className = "file-item";
 
                 const fileIcon = document.createElement("img");
-                fileIcon.src = pngIconUrl;
-                fileIcon.onerror = () => {
-                    fileIcon.src = icoIconUrl;
-                    fileIcon.onerror = null; // Удалить обработчик ошибок после первой проверки
-                };
-
                 const fileLink = document.createElement("a");
                 fileLink.href = file.download_url;
                 fileLink.innerText = file.name;
+
+                fileIcon.src = pngIconUrl;
+                fileIcon.onerror = () => {
+                    fileIcon.src = icoIconUrl;
+                    fileIcon.onerror = () => {
+                        console.error(`Neither PNG nor ICO icons were found for ${file.name}`);
+                    };
+                };
 
                 fileItem.appendChild(fileIcon);
                 fileItem.appendChild(fileLink);
