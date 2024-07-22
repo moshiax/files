@@ -7,10 +7,10 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`)
         .then(response => response.json())
         .then(data => {
-            const files = data.filter(file => file.name.endsWith('.exe'));
+            const files = data.filter(file => file.name.endsWith('.exe') || file.name.endsWith('.rar'));
 
             files.forEach(file => {
-                const fileName = file.name.replace('.exe', '');
+                const fileName = file.name.replace(/\.(exe|rar)$/, '');
                 const pngIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.png`;
                 const icoIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.ico`;
 
@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 const fileIcon = document.createElement("img");
                 const fileLink = document.createElement("a");
                 fileLink.href = file.download_url;
-                fileLink.innerText = file.name;
-                fileLink.style.color = getRandomColor();
+                fileLink.innerText = fileName;
+                fileLink.style.color = "white";
 
                 fileIcon.src = pngIconUrl;
                 fileIcon.onerror = () => {
@@ -42,12 +42,3 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .catch(error => console.error('Error fetching files:', error));
 });
-
-function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
