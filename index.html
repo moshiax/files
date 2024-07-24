@@ -25,11 +25,12 @@
             flex-wrap: wrap;
             justify-content: space-around;
         }
-.file-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Распределяет элементы по бокам */
-}
+
+        .file-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
         .file-item {
             background-color: #161b22;
@@ -41,6 +42,7 @@
             display: flex;
             align-items: center;
             cursor: pointer;
+            position: relative; /* Добавляем для позиционирования кнопки "Online" */
         }
 
         .file-item img {
@@ -49,26 +51,33 @@
             margin-right: 10px;
         }
 
-.file-item a {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
+        .file-item a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            width: 100%;
+            height: 100%;
+        }
 
+        .download-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-left: 10px; /* Отступ между ссылкой и кнопкой */
+        }
 
-    width: 100%;
-    height: 100%;
-}
-
-.download-button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 3px;
-
-    cursor: pointer;
-
-}
-
+        .online-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-left: 10px;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -85,11 +94,13 @@
             const filesToFetch = [
                 { name: "CreamInstaller.zip", download_url: "https://github.com/pointfeev/CreamInstaller/releases/latest/download/CreamInstaller.zip", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/CreamInstaller.png" },
                 { name: "balenaEtcher", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/balenaEtcher-1.19.21.Setup.png" },
-          ];
+                // Добавляем новый файл WarpGen
+                { name: "WarpGen.exe", download_url: "https://raw.githubusercontent.com/moshiax/files/main/etc/WarpGen.exe", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/etc/WarpGen.ico" }
+            ];
 
             const externalLinks = [
                 { name: "Triage", url: "https://tria.ge", icon_url: "https://tria.ge/static/icons/favicon_triage.ico" },
-				{ name: 'Smail', url: 'https://smailpro.com/temporary-email', icon_url: 'https://smailpro.com/img/smailpro.com/favicon-32x32.png' }
+                { name: 'Smail', url: 'https://smailpro.com/temporary-email', icon_url: 'https://smailpro.com/img/smailpro.com/favicon-32x32.png' }
             ];
 
             function renderExternalLinks() {
@@ -201,6 +212,17 @@
                                         window.location.href = "https://raw.githubusercontent.com/moshiax/files/main/etc/windowsdesktop-runtime-8.0.7-win-x64.exe";
                                     };
                                     fileContainer.appendChild(downloadButton);
+                                }
+
+                                if (file.name === "WarpGen.exe") {
+                                    const onlineButton = document.createElement("button");
+                                    onlineButton.className = "online-button";
+                                    onlineButton.innerText = "Online";
+                                    onlineButton.onclick = (event) => {
+                                        event.stopPropagation();
+                                        window.location.href = "https://warpgen.netlify.app";
+                                    };
+                                    fileContainer.appendChild(onlineButton);
                                 }
                             });
 
