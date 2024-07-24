@@ -25,6 +25,11 @@
             flex-wrap: wrap;
             justify-content: space-around;
         }
+.file-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Распределяет элементы по бокам */
+}
 
         .file-item {
             background-color: #161b22;
@@ -44,21 +49,26 @@
             margin-right: 10px;
         }
 
-        .file-item a {
-            text-decoration: none;
-            color: inherit;
-            font-family: 'Courier New', Courier, monospace;
-        }
+.file-item a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
 
-        .download-button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            padding: 5px 10px;
-            margin-left: 10px;
-            cursor: pointer;
-        }
+
+    width: 100%;
+    height: 100%;
+}
+
+.download-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 3px;
+
+    cursor: pointer;
+
+}
+
     </style>
 </head>
 <body>
@@ -75,102 +85,141 @@
             const filesToFetch = [
                 { name: "CreamInstaller.zip", download_url: "https://github.com/pointfeev/CreamInstaller/releases/latest/download/CreamInstaller.zip", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/CreamInstaller.png" },
                 { name: "balenaEtcher", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/balenaEtcher-1.19.21.Setup.png" },
+          ];
+
+            const externalLinks = [
+                { name: "Triage", url: "https://tria.ge", icon_url: "https://tria.ge/static/icons/favicon_triage.ico" },
+				{ name: 'Smail', url: 'https://smailpro.com/temporary-email', icon_url: 'https://smailpro.com/img/smailpro.com/favicon-32x32.png' }
             ];
 
-            fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`)
-                .then(response => response.json())
-                .then(data => {
-                    const repoFiles = data.filter(file => 
-                        file.name.endsWith('.exe') || 
-                        file.name.endsWith('.rar') || 
-                        file.name.endsWith('.torrent')
-                    );
-                    repoFiles.forEach(file => {
-                        filesToFetch.push({ name: file.name, download_url: file.download_url });
-                    });
+            function renderExternalLinks() {
+                externalLinks.forEach(link => {
+                    const linkItem = document.createElement("div");
+                    linkItem.className = "file-item";
 
-                    const processedFiles = {};
+                    const linkIcon = document.createElement("img");
+                    linkIcon.src = link.icon_url;
+                    linkIcon.onerror = () => {
+                        console.error(`Icon not found for ${link.name}`);
+                    };
 
-                    filesToFetch.forEach(file => {
-                        const fileName = file.name.replace(/\.(exe|rar|zip|torrent)$/, '');
-                        const parentFileName = file.parent ? file.parent.replace(/\.(exe|rar|zip|torrent)$/, '') : null;
+                    const linkAnchor = document.createElement("a");
+                    linkAnchor.href = link.url;
+                    linkAnchor.target = "_blank";  // Открывает в новой вкладке
+                    linkAnchor.innerText = link.name;
+                    linkAnchor.style.color = "white";
+                    linkAnchor.style.display = "flex";
+                    linkAnchor.style.alignItems = "center";
+                    linkAnchor.style.textDecoration = "none";
 
-                        if (parentFileName) {
-                            if (!processedFiles[parentFileName]) {
-                                processedFiles[parentFileName] = [];
+                    linkAnchor.prepend(linkIcon);
+
+                    linkItem.appendChild(linkAnchor);
+                    fileListElement.appendChild(linkItem);
+                });
+            }
+
+            function renderFiles() {
+                fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const repoFiles = data.filter(file => 
+                            file.name.endsWith('.exe') || 
+                            file.name.endsWith('.rar') || 
+                            file.name.endsWith('.torrent')
+                        );
+                        repoFiles.forEach(file => {
+                            filesToFetch.push({ name: file.name, download_url: file.download_url });
+                        });
+
+                        const processedFiles = {};
+
+                        filesToFetch.forEach(file => {
+                            const fileName = file.name.replace(/\.(exe|rar|zip|torrent)$/, '');
+                            const parentFileName = file.parent ? file.parent.replace(/\.(exe|rar|zip|torrent)$/, '') : null;
+
+                            if (parentFileName) {
+                                if (!processedFiles[parentFileName]) {
+                                    processedFiles[parentFileName] = [];
+                                }
+                                processedFiles[parentFileName].push(file);
+                            } else {
+                                processedFiles[fileName] = [file];
                             }
-                            processedFiles[parentFileName].push(file);
-                        } else {
-                            processedFiles[fileName] = [file];
-                        }
-                    });
+                        });
 
-                    Object.keys(processedFiles).forEach(fileName => {
-                        const files = processedFiles[fileName];
-                        const pngIconUrl = files[0].icon_url || `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.png`;
-                        const icoIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.ico`;
+                        Object.keys(processedFiles).forEach(fileName => {
+                            const files = processedFiles[fileName];
+                            const pngIconUrl = files[0].icon_url || `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.png`;
+                            const icoIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.ico`;
 
-                        const fileItem = document.createElement("div");
-                        fileItem.className = "file-item";
+                            const fileItem = document.createElement("div");
+                            fileItem.className = "file-item";
 
-                        const fileIcon = document.createElement("img");
-                        fileIcon.src = pngIconUrl;
-                        fileIcon.onerror = () => {
-                            fileIcon.src = icoIconUrl;
+                            const fileIcon = document.createElement("img");
+                            fileIcon.src = pngIconUrl;
                             fileIcon.onerror = () => {
-                                console.error(`Neither PNG nor ICO icons were found for ${fileName}`);
-                            };
-                        };
-
-                        const fileContainer = document.createElement("div");
-                        fileContainer.className = "file-container";
-
-                        files.forEach((file, index) => {
-                            const fileLink = document.createElement("a");
-                            fileLink.href = file.download_url;
-                            fileLink.innerText = file.name.replace(/\.(exe|rar|zip|torrent)$/, '');
-                            fileLink.style.color = "white";
-                            if (index > 0) {
-                                fileLink.className = "nested-file";
-                                fileLink.style.display = "inline-block";
-                                fileLink.style.marginLeft = "10px";
-                                fileLink.style.borderRadius = "50%";
-                                fileLink.style.width = "32px";
-                                fileLink.style.height = "32px";
-                                fileLink.style.backgroundImage = `url(${fileIcon.src})`;
-                                fileLink.style.backgroundSize = "cover";
-                                fileLink.style.textIndent = "-9999px";
-                                fileLink.style.overflow = "hidden";
-                                fileLink.style.whiteSpace = "nowrap";
-                            }
-                            fileLink.addEventListener('click', (event) => {
-                                event.stopPropagation();
-                                window.location.href = file.download_url;
-                            });
-                            fileContainer.appendChild(fileLink);
-
-                            if (file.name === "CreamInstaller.zip") {
-                                const downloadButton = document.createElement("button");
-                                downloadButton.className = "download-button";
-                                downloadButton.innerText = "Download Runtime";
-                                downloadButton.onclick = (event) => {
-                                    event.stopPropagation();
-                                    window.location.href = "https://raw.githubusercontent.com/moshiax/files/main/exe/windowsdesktop-runtime-8.0.7-win-x64.exe";
+                                fileIcon.src = icoIconUrl;
+                                fileIcon.onerror = () => {
+                                    console.error(`Neither PNG nor ICO icons were found for ${fileName}`);
                                 };
-                                fileContainer.appendChild(downloadButton);
-                            }
-                        });
+                            };
 
-                        fileItem.appendChild(fileIcon);
-                        fileItem.appendChild(fileContainer);
-                        fileItem.addEventListener('click', () => {
-                            window.location.href = files[0].download_url;
-                        });
+                            const fileContainer = document.createElement("div");
+                            fileContainer.className = "file-container";
 
-                        fileListElement.appendChild(fileItem);
-                    });
-                })
-                .catch(error => console.error('Error fetching files:', error));
+                            files.forEach((file, index) => {
+                                const fileLink = document.createElement("a");
+                                fileLink.href = file.download_url;
+                                fileLink.target = "_self";  // Открывает в той же вкладке
+                                fileLink.innerText = file.name.replace(/\.(exe|rar|zip|torrent)$/, '');
+                                fileLink.style.color = "white";
+                                if (index > 0) {
+                                    fileLink.className = "nested-file";
+                                    fileLink.style.display = "inline-block";
+                                    fileLink.style.marginLeft = "10px";
+                                    fileLink.style.borderRadius = "50%";
+                                    fileLink.style.width = "32px";
+                                    fileLink.style.height = "32px";
+                                    fileLink.style.backgroundImage = `url(${fileIcon.src})`;
+                                    fileLink.style.backgroundSize = "cover";
+                                    fileLink.style.textIndent = "-9999px";
+                                    fileLink.style.overflow = "hidden";
+                                    fileLink.style.whiteSpace = "nowrap";
+                                }
+                                fileLink.addEventListener('click', (event) => {
+                                    event.stopPropagation();
+                                });
+                                fileContainer.appendChild(fileLink);
+
+                                if (file.name === "CreamInstaller.zip") {
+                                    const downloadButton = document.createElement("button");
+                                    downloadButton.className = "download-button";
+                                    downloadButton.innerText = "Download Runtime";
+                                    downloadButton.onclick = (event) => {
+                                        event.stopPropagation();
+                                        window.location.href = "https://raw.githubusercontent.com/moshiax/files/main/etc/windowsdesktop-runtime-8.0.7-win-x64.exe";
+                                    };
+                                    fileContainer.appendChild(downloadButton);
+                                }
+                            });
+
+                            fileItem.appendChild(fileIcon);
+                            fileItem.appendChild(fileContainer);
+                            fileItem.addEventListener('click', () => {
+                                window.location.href = files[0].download_url;
+                            });
+
+                            fileListElement.appendChild(fileItem);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching files:', error));
+            }
+
+            // Render external links first
+            renderExternalLinks();
+            // Then render files
+            renderFiles();
         });
     </script>
 </body>
