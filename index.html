@@ -26,18 +26,40 @@
             justify-content: space-around;
         }
 
-        .file-item {
-            background-color: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 6px;
-            padding: 10px;
-            margin: 10px;
-            width: calc(50% - 20px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-        }
+/* Существующие стили */
+.file-item {
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 10px;
+    margin: 10px;
+    width: calc(50% - 20px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    box-sizing: border-box; 
+}
+
+
+@media (max-width: 768px) {
+    .file-item {
+        width: calc(100% - 20px);
+        flex-direction: column; 
+        align-items: flex-start;
+    }
+
+    .file-link {
+        flex-grow: 1;
+    }
+
+    .button {
+        margin-top: 10px;
+        width: 100%; 
+        text-align: center;
+    }
+}
+
 
         .file-item img {
             width: 32px;
