@@ -248,6 +248,31 @@
     border-color: var(--hover-color);
     box-shadow: 0 0 1em var(--hover-color);
 }
+.button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 0.1875em;
+    cursor: pointer;
+    margin-left: 1em;
+    padding: 0.5em 1em;
+    font-size: 0.875em;
+    white-space: nowrap;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+.button:hover {
+    background-color: #218838;
+    opacity: 0.9;
+}
+
+.button:focus {
+    outline: none;
+}
+
+.button.pulse {
+    animation: pulse 2s infinite;
+}
 
     </style>
 </head>
@@ -428,6 +453,31 @@ function renderFiles() {
                     };
                     fileItem.appendChild(downloadButton);
                 }
+        if (fileName === "Photoshop 2024") {
+            const downloadHostsButton = document.createElement("button");
+            downloadHostsButton.className = "button";
+            downloadHostsButton.innerText = "hosts";
+            downloadHostsButton.onclick = (event) => {
+                event.stopPropagation();
+                // Download hosts.txt
+                const hostsUrl = "https://raw.githubusercontent.com/moshiax/files/main/etc/hosts.txt";
+                const tempLink = document.createElement('a');
+                tempLink.href = hostsUrl;
+                tempLink.download = "hosts.txt";
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                document.body.removeChild(tempLink);
+
+                // Ask user if they want to copy the path
+                const copyPath = confirm("Do you want to copy the path to the hosts file to your clipboard?");
+                if (copyPath) {
+                    navigator.clipboard.writeText("C:/Windows/System32/Drivers/etc/hosts")
+                        .then(() => alert("Path copied to clipboard!"))
+                        .catch(err => console.error("Failed to copy path:", err));
+                }
+            };
+            fileItem.appendChild(downloadHostsButton);
+        }
 
                 if (fileName === "WarpGen") {
                     const onlineButton = document.createElement("button");
