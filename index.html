@@ -24,6 +24,23 @@
     border-color: #58a6ff;
     box-shadow: 0 0 1em rgba(88, 166, 255, 5.5);
 }
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.8);
+    }
+    50% {
+        box-shadow: 0 0 15px 10px rgba(255, 0, 0, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.8);
+    }
+}
+
+.modal-content.alert {
+    animation: pulse 2s infinite;
+    border-radius: 0.5em; 
+}
+
 
         #file-list {
             margin-top: 2em;
@@ -64,7 +81,7 @@
 }
 
 .modal {
-    display: none; /* Initially hidden */
+    display: none;
 }
 
 .modal.show {
@@ -277,10 +294,6 @@
 
                 const linkIcon = document.createElement("img");
                 linkIcon.src = link.icon_url;
-                linkIcon.onerror = () => {
-                    console.error(`Icon not found for ${link.name}`);
-                };
-
                 const linkAnchor = document.createElement("a");
                 linkAnchor.href = link.url;
                 linkAnchor.target = "_blank";
@@ -544,7 +557,9 @@ function closeModal() {
     setTimeout(() => {
         modal.style.display = "none";
         confirmationInput.value = ""; 
-        confirmDownloadButton.disabled = true; 
+        confirmDownloadButton.disabled = true;
+
+        document.querySelector('.modal-content').classList.remove('alert');
     }, 300);
 }
 
@@ -558,7 +573,10 @@ function showModal() {
     modal.style.display = "flex";
     modal.classList.add("show");
     modal.classList.remove("hide");
+
+    document.querySelector('.modal-content').classList.add('alert');
 }
+
 
 
 window.addEventListener("click", (event) => {
