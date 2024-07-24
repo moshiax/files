@@ -39,6 +39,37 @@
             cursor: pointer;
             box-sizing: border-box;
         }
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalFadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.modal {
+    display: none; /* Initially hidden */
+}
+
+.modal.show {
+    display: flex;
+    animation: modalFadeIn 0.3s forwards;
+}
+
+.modal.hide {
+    animation: modalFadeOut 0.3s forwards;
+}
+
 
         @media (max-width: 48em) {
             .file-item {
@@ -108,11 +139,6 @@
             margin-bottom: 0.5em;
         }
 
-        .expanded-content.expanded {
-            max-height: 25em;
-            opacity: 1;
-        }
-
         /* Styles for the modal */
         .modal {
             display: none;
@@ -160,6 +186,12 @@
             font-size: 0.875em;
             white-space: nowrap;
             margin-top: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .modal-content button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -171,205 +203,254 @@
     <div id="modal" class="modal">
         <div class="modal-content">
             <h2>Warning!</h2>
-            <p>You are about to download obfuscator.exe. This file is used to obfuscate executable files. If you are sure you want to download it, please type <strong>obfuscator.exe</strong> below to confirm.</p>
+            <p>You are about to download obfuscator.exe. This file is real obfuscator.exe. If you are sure you want to download it, please type <strong>obfuscator.exe</strong> below to confirm.</p>
             <input type="text" id="confirmation-input" placeholder="Type obfuscator.exe to confirm">
             <button id="confirm-download" disabled>Download</button>
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const repoOwner = "moshiax";
-            const repoName = "files";
-            const filePath = "exe";
-            const fileListElement = document.getElementById("file-list");
-            const modal = document.getElementById("modal");
-            const confirmationInput = document.getElementById("confirmation-input");
-            const confirmDownloadButton = document.getElementById("confirm-download");
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const repoOwner = "moshiax";
+        const repoName = "files";
+        const filePath = "exe";
+        const fileListElement = document.getElementById("file-list");
+        const modal = document.getElementById("modal");
+        const confirmationInput = document.getElementById("confirmation-input");
+        const confirmDownloadButton = document.getElementById("confirm-download");
 
-            const filesToFetch = [
-                { name: "CreamInstaller.zip", download_url: "https://github.com/pointfeev/CreamInstaller/releases/latest/download/CreamInstaller.zip", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/CreamInstaller.png" },
-                { name: "balenaEtcher", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/balenaEtcher-1.19.21.Setup.png" },
-                { name: "WarpGen.exe", download_url: "https://raw.githubusercontent.com/moshiax/files/main/etc/WarpGen.exe", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/etc/WarpGen.ico" },
-                { name: "obfuscator.exe", download_url: "https://raw.githubusercontent.com/moshiax/files/main/etc/obfuscator.exe", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/obfuscator.png" }
-            ];
+        const filesToFetch = [
+            { name: "CreamInstaller.zip", download_url: "https://github.com/pointfeev/CreamInstaller/releases/latest/download/CreamInstaller.zip", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/CreamInstaller.png" },
+            { name: "balenaEtcher", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/balenaEtcher-1.19.21.Setup.png" },
+            { name: "WarpGen.exe", download_url: "https://raw.githubusercontent.com/moshiax/files/main/etc/WarpGen.exe", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/etc/WarpGen.ico" }
+        ];
 
-            const externalLinks = [
-                { name: "Triage", url: "https://tria.ge", icon_url: "https://tria.ge/static/icons/favicon_triage.ico" },
-                { name: 'Smail', url: 'https://smailpro.com/temporary-email', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/exe/smail.png' },
-                { name: 'BeznogyCrypt', url: 'https://beznogycrypt.netlify.app', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/exe/beznogycrypt.png' },
-            ];
+        const externalLinks = [
+            { name: "Triage", url: "https://tria.ge", icon_url: "https://tria.ge/static/icons/favicon_triage.ico" },
+            { name: 'Smail', url: 'https://smailpro.com/temporary-email', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/exe/smail.png' },
+            { name: 'BeznogyCrypt', url: 'https://beznogycrypt.netlify.app', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/exe/beznogycrypt.png' },
+        ];
 
-            function renderExternalLinks() {
-                externalLinks.forEach(link => {
-                    const linkItem = document.createElement("div");
-                    linkItem.className = "file-item";
+        function renderExternalLinks() {
+            externalLinks.forEach(link => {
+                const linkItem = document.createElement("div");
+                linkItem.className = "file-item";
 
-                    const linkIcon = document.createElement("img");
-                    linkIcon.src = link.icon_url;
-                    linkIcon.onerror = () => {
-                        console.error(`Icon not found for ${link.name}`);
-                    };
-
-                    const linkAnchor = document.createElement("a");
-                    linkAnchor.href = link.url;
-                    linkAnchor.target = "_blank";
-                    linkAnchor.className = "file-link";
-                    linkAnchor.innerText = link.name;
-
-                    linkAnchor.prepend(linkIcon);
-
-                    linkItem.appendChild(linkAnchor);
-                    fileListElement.appendChild(linkItem);
-                });
-
-                renderTihiyDomItem();
-            }
-
-            function renderFiles() {
-                fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const repoFiles = data.filter(file =>
-                            file.name.endsWith('.exe') ||
-                            file.name.endsWith('.rar') ||
-                            file.name.endsWith('.torrent')
-                        );
-                        repoFiles.forEach(file => {
-                            filesToFetch.push({ name: file.name, download_url: file.download_url });
-                        });
-
-                        const processedFiles = {};
-
-                        filesToFetch.forEach(file => {
-                            const fileName = file.name.replace(/\.(exe|rar|zip|torrent)$/, '');
-                            const parentFileName = file.parent ? file.parent.replace(/\.(exe|rar|zip|torrent)$/, '') : null;
-
-                            if (parentFileName) {
-                                if (!processedFiles[parentFileName]) {
-                                    processedFiles[parentFileName] = [];
-                                }
-                                processedFiles[parentFileName].push(file);
-                            } else {
-                                processedFiles[fileName] = [file];
-                            }
-                        });
-
-                        Object.keys(processedFiles).forEach(fileName => {
-                            const files = processedFiles[fileName];
-                            const pngIconUrl = files[0].icon_url || `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.png`;
-                            const icoIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.ico`;
-
-                            const fileItem = document.createElement("div");
-                            fileItem.className = "file-item";
-
-                            const fileIcon = document.createElement("img");
-                            fileIcon.src = pngIconUrl;
-                            fileIcon.onerror = () => {
-                                fileIcon.src = icoIconUrl;
-                                fileIcon.onerror = () => {
-                                    console.error(`Neither PNG nor ICO icons were found for ${fileName}`);
-                                };
-                            };
-
-                            const fileLink = document.createElement("a");
-                            fileLink.href = files[0].download_url;
-                            fileLink.target = "_self";
-                            fileLink.className = "file-link";
-                            fileLink.innerText = fileName;
-
-                            fileItem.appendChild(fileIcon);
-                            fileItem.appendChild(fileLink);
-
-                            if (fileName === "CreamInstaller") {
-                                const downloadButton = document.createElement("button");
-                                downloadButton.className = "button";
-                                downloadButton.innerText = "Download Runtime";
-                                downloadButton.onclick = (event) => {
-                                    event.stopPropagation();
-                                    window.location.href = "https://raw.githubusercontent.com/moshiax/files/main/etc/windowsdesktop-runtime-8.0.7-win-x64.exe";
-                                };
-                                fileItem.appendChild(downloadButton);
-                            }
-
-                            if (fileName === "WarpGen") {
-                                const onlineButton = document.createElement("button");
-                                onlineButton.className = "button";
-                                onlineButton.innerText = "Online";
-                                onlineButton.onclick = (event) => {
-                                    event.stopPropagation();
-                                    window.open("https://warpgen.netlify.app", "_blank");
-                                };
-                                fileItem.appendChild(onlineButton);
-                            }
-
-                            if (fileName === "obfuscator.exe") {
-                                fileItem.addEventListener('click', (event) => {
-                                    event.stopPropagation();
-                                    modal.style.display = "flex";
-                                    confirmDownloadButton.onclick = () => {
-                                        window.location.href = file.download_url;
-                                        modal.style.display = "none";
-                                    };
-                                });
-                            }
-
-                            fileItem.addEventListener('click', () => {
-                                window.location.href = files[0].download_url;
-                            });
-
-                            fileListElement.appendChild(fileItem);
-                        });
-                    })
-                    .catch(error => console.error('Error fetching files:', error));
-            }
-
-            function renderTihiyDomItem() {
-                const tihiyDomItem = document.createElement("div");
-                tihiyDomItem.className = "file-item";
-                tihiyDomItem.id = "tihiy-dom-item";
-
-                const tihiyDomIcon = document.createElement("img");
-                tihiyDomIcon.src = "https://tihiyd0m.netlify.app/vector-icons/favicon.4c70c2b.ico";
-                tihiyDomIcon.onerror = () => {
-                    console.error("Icon not found for Tihiy Dom");
+                const linkIcon = document.createElement("img");
+                linkIcon.src = link.icon_url;
+                linkIcon.onerror = () => {
+                    console.error(`Icon not found for ${link.name}`);
                 };
 
-                const tihiyDomLink = document.createElement("div");
-                tihiyDomLink.className = "file-link";
-                tihiyDomLink.innerText = "Тихий Дом";
+                const linkAnchor = document.createElement("a");
+                linkAnchor.href = link.url;
+                linkAnchor.target = "_blank";
+                linkAnchor.className = "file-link";
+                linkAnchor.innerText = link.name;
 
-                const tihiyDomContent = document.createElement("div");
-                tihiyDomContent.className = "expanded-content hidden";
-                tihiyDomContent.innerHTML = `
-                    <a href="http://tihiydom.online" target="_blank" onclick="event.stopPropagation()">http://tihiydom.online</a>
-                    <a href="https://tihiydom.netlify.app" target="_blank" onclick="event.stopPropagation()">https://tihiydom.netlify.app</a>
-                    <a href="https://tihiyd0m.netlify.app" target="_blank" onclick="event.stopPropagation()">https://tihiyd0m.netlify.app</a>
-                `;
+                linkAnchor.prepend(linkIcon);
 
-                tihiyDomItem.appendChild(tihiyDomIcon);
-                tihiyDomItem.appendChild(tihiyDomLink);
-                tihiyDomItem.appendChild(tihiyDomContent);
-
-                tihiyDomItem.addEventListener('click', () => {
-                    tihiyDomContent.classList.toggle("hidden");
-                    tihiyDomContent.classList.toggle("expanded");
-                });
-
-                fileListElement.prepend(tihiyDomItem);
-            }
-
-            confirmationInput.addEventListener('input', () => {
-                if (confirmationInput.value === "obfuscator.exe") {
-                    confirmDownloadButton.disabled = false;
-                } else {
-                    confirmDownloadButton.disabled = true;
-                }
+                linkItem.appendChild(linkAnchor);
+                fileListElement.appendChild(linkItem);
             });
 
-            renderExternalLinks();
-            renderFiles();
+            renderTihiyDomItem();
+        }
+
+        function renderFiles() {
+            fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`)
+                .then(response => response.json())
+                .then(data => {
+                    const repoFiles = data.filter(file =>
+                        file.name.endsWith('.exe') ||
+                        file.name.endsWith('.rar') ||
+                        file.name.endsWith('.torrent')
+                    );
+                    repoFiles.forEach(file => {
+                        filesToFetch.push({ name: file.name, download_url: file.download_url });
+                    });
+
+                    const processedFiles = {};
+
+                    filesToFetch.forEach(file => {
+                        const fileName = file.name.replace(/\.(exe|rar|zip|torrent)$/, '');
+                        const parentFileName = file.parent ? file.parent.replace(/\.(exe|rar|zip|torrent)$/, '') : null;
+
+                        if (parentFileName) {
+                            if (!processedFiles[parentFileName]) {
+                                processedFiles[parentFileName] = [];
+                            }
+                            processedFiles[parentFileName].push(file);
+                        } else {
+                            processedFiles[fileName] = [file];
+                        }
+                    });
+
+                    Object.keys(processedFiles).forEach(fileName => {
+                        const files = processedFiles[fileName];
+                        const pngIconUrl = files[0].icon_url || `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.png`;
+                        const icoIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.ico`;
+
+                        const fileItem = document.createElement("div");
+                        fileItem.className = "file-item";
+
+                        const fileIcon = document.createElement("img");
+                        fileIcon.src = pngIconUrl;
+                        fileIcon.onerror = () => {
+                            fileIcon.src = icoIconUrl;
+                            fileIcon.onerror = () => {
+                                console.error(`Neither PNG nor ICO icons were found for ${fileName}`);
+                            };
+                        };
+
+                        const fileLink = document.createElement("a");
+                        fileLink.href = files[0].download_url;
+                        fileLink.target = "_self";
+                        fileLink.className = "file-link";
+                        fileLink.innerText = fileName;
+
+                        fileItem.appendChild(fileIcon);
+                        fileItem.appendChild(fileLink);
+
+                        if (fileName === "CreamInstaller") {
+                            const downloadButton = document.createElement("button");
+                            downloadButton.className = "button";
+                            downloadButton.innerText = "Download Runtime";
+                            downloadButton.onclick = (event) => {
+                                event.stopPropagation();
+                                window.location.href = "https://raw.githubusercontent.com/moshiax/files/main/etc/windowsdesktop-runtime-8.0.7-win-x64.exe";
+                            };
+                            fileItem.appendChild(downloadButton);
+                        }
+
+                        if (fileName === "WarpGen") {
+                            const onlineButton = document.createElement("button");
+                            onlineButton.className = "button";
+                            onlineButton.innerText = "Online";
+                            onlineButton.onclick = (event) => {
+                                event.stopPropagation();
+                                window.open("https://warpgen.netlify.app", "_blank");
+                            };
+                            fileItem.appendChild(onlineButton);
+                        }
+
+                        fileItem.addEventListener('click', () => {
+                            window.location.href = files[0].download_url;
+                        });
+
+                        fileListElement.appendChild(fileItem);
+                    });
+
+                    renderObfuscatorFile();
+                })
+                .catch(error => console.error('Error fetching files:', error));
+        }
+
+        function renderObfuscatorFile() {
+            const obfuscatorFile = {
+                name: "obfuscator.exe",
+                download_url: "https://raw.githubusercontent.com/moshiax/files/main/etc/obfuscator.exe"
+            };
+
+            const fileItem = document.createElement("div");
+            fileItem.className = "file-item";
+
+            const fileIcon = document.createElement("img");
+            fileIcon.src = "https://raw.githubusercontent.com/moshiax/files/main/exe/obfuscator.png";
+            fileIcon.onerror = () => {
+                fileIcon.src = "https://raw.githubusercontent.com/moshiax/files/main/exe/obfuscator.ico";
+                fileIcon.onerror = () => {
+                    console.error(`Neither PNG nor ICO icons were found for obfuscator.exe`);
+                };
+            };
+
+            const fileLink = document.createElement("a");
+            fileLink.className = "file-link";
+            fileLink.innerText = obfuscatorFile.name;
+
+            fileItem.appendChild(fileIcon);
+            fileItem.appendChild(fileLink);
+
+            fileItem.addEventListener('click', (event) => {
+                event.preventDefault();
+                showModal();
+            });
+
+            confirmDownloadButton.onclick = () => {
+                window.location.href = obfuscatorFile.download_url;
+                closeModal();
+            };
+
+            fileListElement.appendChild(fileItem);
+        }
+
+        function renderTihiyDomItem() {
+            const tihiyDomItem = document.createElement("div");
+            tihiyDomItem.className = "file-item";
+            tihiyDomItem.id = "tihiy-dom-item";
+
+            const tihiyDomIcon = document.createElement("img");
+            tihiyDomIcon.src = "https://tihiyd0m.netlify.app/vector-icons/favicon.4c70c2b.ico";
+            tihiyDomIcon.onerror = () => {
+                console.error("Icon not found for Tihiy Dom");
+            };
+
+            const tihiyDomLink = document.createElement("div");
+            tihiyDomLink.className = "file-link";
+            tihiyDomLink.innerText = "Тихий Дом";
+
+            const tihiyDomContent = document.createElement("div");
+            tihiyDomContent.className = "expanded-content hidden";
+            tihiyDomContent.innerHTML = `
+                <a href="http://tihiydom.online" target="_blank" onclick="event.stopPropagation()">http://tihiydom.online</a>
+                <a href="https://tihiydom.netlify.app" target="_blank" onclick="event.stopPropagation()">https://tihiydom.netlify.app</a>
+                <a href="https://tihiyd0m.netlify.app" target="_blank" onclick="event.stopPropagation()">https://tihiyd0m.netlify.app</a>
+            `;
+
+            tihiyDomItem.appendChild(tihiyDomIcon);
+            tihiyDomItem.appendChild(tihiyDomLink);
+            tihiyDomItem.appendChild(tihiyDomContent);
+
+            tihiyDomItem.addEventListener('click', () => {
+                tihiyDomContent.classList.toggle("hidden");
+                tihiyDomContent.classList.toggle("expanded");
+            });
+
+            fileListElement.prepend(tihiyDomItem);
+        }
+
+        function showModal() {
+            modal.style.display = "flex";
+            modal.classList.add("show");
+            modal.classList.remove("hide");
+        }
+
+        function closeModal() {
+            modal.classList.add("hide");
+            modal.classList.remove("show");
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 300); // Duration of the fade-out animation
+        }
+
+        confirmationInput.addEventListener('input', () => {
+            if (confirmationInput.value === "obfuscator.exe") {
+                confirmDownloadButton.disabled = false;
+            } else {
+                confirmDownloadButton.disabled = true;
+            }
         });
-    </script>
+
+        window.addEventListener("click", (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        renderExternalLinks();
+        renderFiles();
+    });
+</script>
+
 </body>
 </html>
