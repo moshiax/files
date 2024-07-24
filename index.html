@@ -18,6 +18,10 @@
             text-align: center;
             width: 70%;
         }
+.file-item:hover {
+    border-color: #58a6ff;
+    box-shadow: 0 0 1em rgba(88, 166, 255, 5.5);
+}
 
         #file-list {
             margin-top: 2em;
@@ -103,17 +107,46 @@
             flex-grow: 1;
         }
 
-        .button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 0.1875em;
-            cursor: pointer;
-            margin-left: 1em;
-            padding: 0.5em 1em;
-            font-size: 0.875em;
-            white-space: nowrap;
-        }
+.button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 0.1875em;
+    cursor: pointer;
+    margin-left: 1em;
+    padding: 0.5em 1em;
+    font-size: 0.875em;
+    white-space: nowrap;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+.button:hover {
+    background-color: #218838; 
+    opacity: 0.9; 
+}
+
+#confirm-download {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 0.1875em;
+    cursor: pointer;
+    padding: 0.5em 1em;
+    font-size: 0.875em;
+    white-space: nowrap;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+#confirm-download:not([disabled]):hover {
+    background-color: #218838; 
+    opacity: 0.9;
+}
+
+#confirm-download:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
 
         .hidden {
             display: none;
@@ -139,7 +172,6 @@
             margin-bottom: 0.5em;
         }
 
-        /* Styles for the modal */
         .modal {
             display: none;
             position: fixed;
@@ -391,10 +423,6 @@
 
             const tihiyDomIcon = document.createElement("img");
             tihiyDomIcon.src = "https://tihiyd0m.netlify.app/vector-icons/favicon.4c70c2b.ico";
-            tihiyDomIcon.onerror = () => {
-                console.error("Icon not found for Tihiy Dom");
-            };
-
             const tihiyDomLink = document.createElement("div");
             tihiyDomLink.className = "file-link";
             tihiyDomLink.innerText = "Тихий Дом";
@@ -419,19 +447,35 @@
             fileListElement.prepend(tihiyDomItem);
         }
 
-        function showModal() {
-            modal.style.display = "flex";
-            modal.classList.add("show");
-            modal.classList.remove("hide");
-        }
+function closeModal() {
+    modal.classList.add("hide");
+    modal.classList.remove("show");
+    setTimeout(() => {
+        modal.style.display = "none";
+        confirmationInput.value = ""; 
+        confirmDownloadButton.disabled = true; 
+    }, 300);
+}
 
-        function closeModal() {
-            modal.classList.add("hide");
-            modal.classList.remove("show");
-            setTimeout(() => {
-                modal.style.display = "none";
-            }, 300); // Duration of the fade-out animation
-        }
+
+confirmDownloadButton.onclick = () => {
+    window.location.href = obfuscatorFile.download_url;
+    closeModal();
+};
+
+function showModal() {
+    modal.style.display = "flex";
+    modal.classList.add("show");
+    modal.classList.remove("hide");
+}
+
+
+window.addEventListener("click", (event) => {
+    if (event.target === modal) {
+        closeModal();
+    }
+});
+
 
         confirmationInput.addEventListener('input', () => {
             if (confirmationInput.value === "obfuscator.exe") {
