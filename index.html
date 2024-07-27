@@ -430,6 +430,7 @@
             { name: "Triage", url: "https://tria.ge", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/triage.png" },
             { name: 'Smail', url: 'https://smailpro.com/temporary-email', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/exe/smail.png' },
             { name: 'BeznogyCrypt', url: 'https://beznogycrypt.netlify.app', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/exe/beznogycrypt.png' },
+            { name: 'botToken Manager', url: 'https://moshiax.github.io/files/tokenmanager', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/exe/tokenmanager.png' },			
         ];
 
         function renderExternalLinks() {
@@ -624,7 +625,7 @@ function renderFiles() {
                 if (fileName === "CreamInstaller") {
                     const downloadButton = document.createElement("button");
                     downloadButton.className = "button";
-                    downloadButton.innerText = "Download Runtime";
+                    downloadButton.innerText = "Runtime";
                     downloadButton.onclick = (event) => {
                         event.stopPropagation();
                         window.location.href = "https://raw.githubusercontent.com/moshiax/files/main/etc/windowsdesktop-runtime-8.0.7-win-x64.exe";
