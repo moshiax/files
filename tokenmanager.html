@@ -423,14 +423,14 @@ async function sendTelegramMessage() {
             apiEndpoint = 'sendPhoto';   
             formData.append('photo', photoFile);
         } else if (fileType.startsWith('video/') || fileType.endsWith('.webm')) {
-            apiEndpoint = 'sendAnimation'; // Use sendAnimation for WEBM
+
+            apiEndpoint = 'sendAnimation';
             formData.append('animation', photoFile);
         } else {
             apiEndpoint = 'sendDocument';
             formData.append('document', photoFile);
         }
 
-        // Set caption if there's a text message
         if (message) {
             formData.append('caption', message);
         }
@@ -449,8 +449,7 @@ async function sendTelegramMessage() {
         if (data.ok) {
             const sentMessage = data.result;
             showStatus('telegram-status', 'Message sent!', true);
-            
-            // Обработка отправленного сообщения
+
             await addMessageToTerminal(sentMessage, token);
         } else {
             showStatus('telegram-status', 'Error during sending message: ' + data.description, false);
@@ -460,6 +459,7 @@ async function sendTelegramMessage() {
         showStatus('telegram-status', 'Error during sending message', false);
     }
 }
+
 
 
 async function addMessageToTerminal(message, token) {
@@ -472,7 +472,7 @@ async function addMessageToTerminal(message, token) {
     let chatLink = '';
 
     try {
-        // Получение информации о чате
+
         if (message.chat) {
             const chatId = message.chat.id;
             const chatTitle = message.chat.title || message.chat.username || 'Unknown';
@@ -489,7 +489,7 @@ async function addMessageToTerminal(message, token) {
                         chatLink = await createInviteLink(token, chatId);
                     } catch (error) {
                         console.error('Error creating invite link:', error);
-                        chatLink = ''; // Если все методы не сработали, оставляем ссылку пустой
+                        chatLink = ''; 
                     }
                 }
             }
@@ -548,6 +548,8 @@ async function addMessageToTerminal(message, token) {
                 videoElement.style.width = 'auto';
                 videoElement.style.height = 'auto';
                 videoElement.controls = true;
+                videoElement.autoplay = true; 
+                videoElement.loop = true;
 
                 videoElement.addEventListener('click', () => {
                     if (videoElement.paused) {
@@ -916,8 +918,7 @@ async function handleIncomingMessage(message, token) {
             const fileId = message.sticker.file_id;
             const filePath = await getFilePath(token, fileId);
             const stickerUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
-            
-            // Проверяем, является ли стикер WEBM
+
             if (filePath.endsWith('.webm')) {
                 // Обрабатываем WEBM стикер как видео
                 const videoElement = document.createElement('video');
@@ -931,7 +932,7 @@ async function handleIncomingMessage(message, token) {
                 videoElement.loop = true;
                 newMessage.appendChild(videoElement);
             } else {
-                // Обрабатываем другие стикеры как изображения
+
                 const imgElement = document.createElement('img');
                 imgElement.src = stickerUrl;
                 imgElement.style.maxWidth = '400px';
