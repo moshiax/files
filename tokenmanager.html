@@ -421,11 +421,16 @@ function sendTelegramMessage() {
     let method = 'POST';
 
     if (photoFile) {
-        const fileType = photoFile.type.split('/')[0];
-        if (fileType === 'image') {
-            apiEndpoint = 'sendPhoto';
-            formData.append('photo', photoFile);
-        } else if (fileType === 'video') {
+        const fileType = photoFile.type;
+        if (fileType.startsWith('image/')) {
+            if (fileType === 'image/webp') {
+                apiEndpoint = 'sendDocument'; 
+                formData.append('document', photoFile); 
+            } else {
+                apiEndpoint = 'sendPhoto';   
+                formData.append('photo', photoFile);
+            }
+        } else if (fileType.startsWith('video/')) {
             apiEndpoint = 'sendVideo';
             formData.append('video', photoFile);
         } else {
