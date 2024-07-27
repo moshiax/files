@@ -422,19 +422,17 @@ async function sendTelegramMessage() {
         if (fileType.startsWith('image/')) {
             apiEndpoint = 'sendPhoto';   
             formData.append('photo', photoFile);
-
-            // Set caption if there's a text message
-            if (message) {
-                formData.append('caption', message);
-            }
+        } else if (fileType.startsWith('video/') || fileType.endsWith('.webm')) {
+            apiEndpoint = 'sendAnimation'; // Use sendAnimation for WEBM
+            formData.append('animation', photoFile);
         } else {
             apiEndpoint = 'sendDocument';
             formData.append('document', photoFile);
+        }
 
-            // Set caption if there's a text message
-            if (message) {
-                formData.append('caption', message);
-            }
+        // Set caption if there's a text message
+        if (message) {
+            formData.append('caption', message);
         }
     } else {
         apiEndpoint = 'sendMessage';
@@ -463,6 +461,7 @@ async function sendTelegramMessage() {
     }
 }
 
+
 async function addMessageToTerminal(message, token) {
     const terminalOutput = document.getElementById('terminal-output');
     const newMessage = document.createElement('div');
@@ -476,7 +475,7 @@ async function addMessageToTerminal(message, token) {
         // Получение информации о чате
         if (message.chat) {
             const chatId = message.chat.id;
-            const chatTitle = await getChatTitle(token, chatId);
+            const chatTitle = message.chat.title || message.chat.username || 'Unknown';
 
             try {
                 chatLink = await getChatLink(token, chatId);
@@ -535,12 +534,51 @@ async function addMessageToTerminal(message, token) {
                 captionElement.textContent = ` ${message.caption}`;
                 newMessage.appendChild(captionElement);
             }
-        } else if (message.video || message.animation) {
-            const fileId = message.video ? message.video.file_id : message.animation.file_id;
+        } else if (message.video || message.animation || message.document) {
+            const fileId = message.video ? message.video.file_id : message.animation ? message.animation.file_id : message.document.file_id;
             const filePath = await getFilePath(token, fileId);
-            const videoUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
+            const fileUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
+
+            if (filePath.endsWith('.webm')) {
+
+                const videoElement = document.createElement('video');
+                videoElement.src = fileUrl;
+                videoElement.style.maxWidth = '400px';
+                videoElement.style.maxHeight = '300px';
+                videoElement.style.width = 'auto';
+                videoElement.style.height = 'auto';
+                videoElement.controls = true;
+
+                videoElement.addEventListener('click', () => {
+                    if (videoElement.paused) {
+                        videoElement.play();
+                    } else {
+                        videoElement.pause();
+                    }
+                });
+
+                newMessage.appendChild(videoElement);
+            } else {
+                // Handling other documents (non-VIDEO)
+                const linkElement = document.createElement('a');
+                linkElement.href = fileUrl;
+                linkElement.textContent = `File: ${message.document.file_name || 'file'}`;
+                linkElement.target = '_blank';
+                newMessage.appendChild(linkElement);
+            }
+
+            if (message.caption) {
+                newMessage.appendChild(document.createElement('br')); 
+                const captionElement = document.createElement('span');
+                captionElement.textContent = ` ${message.caption}`;
+                newMessage.appendChild(captionElement);
+            }
+        } else if (message.sticker) {
+            const fileId = message.sticker.file_id;
+            const filePath = await getFilePath(token, fileId);
+            const stickerUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
             const videoElement = document.createElement('video');
-            videoElement.src = videoUrl;
+            videoElement.src = stickerUrl;
             videoElement.style.maxWidth = '400px';
             videoElement.style.maxHeight = '300px';
             videoElement.style.width = 'auto';
@@ -556,41 +594,6 @@ async function addMessageToTerminal(message, token) {
             });
 
             newMessage.appendChild(videoElement);
-
-            if (message.caption) {
-                newMessage.appendChild(document.createElement('br')); 
-                const captionElement = document.createElement('span');
-                captionElement.textContent = ` ${message.caption}`;
-                newMessage.appendChild(captionElement);
-            }
-        } else if (message.document) {
-            const fileId = message.document.file_id;
-            const fileName = message.document.file_name || 'file';
-            const filePath = await getFilePath(token, fileId);
-            const fileUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
-            const linkElement = document.createElement('a');
-            linkElement.href = fileUrl;
-            linkElement.textContent = `File: ${fileName}`;
-            linkElement.target = '_blank';
-            newMessage.appendChild(linkElement);
-
-            if (message.caption) {
-                newMessage.appendChild(document.createElement('br')); 
-                const captionElement = document.createElement('span');
-                captionElement.textContent = ` ${message.caption}`;
-                newMessage.appendChild(captionElement);
-            }
-        } else if (message.sticker) {
-            const fileId = message.sticker.file_id;
-            const filePath = await getFilePath(token, fileId);
-            const stickerUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
-            const imgElement = document.createElement('img');
-            imgElement.src = stickerUrl;
-            imgElement.style.maxWidth = '400px';
-            imgElement.style.maxHeight = '300px';
-            imgElement.style.width = 'auto';
-            imgElement.style.height = 'auto';
-            newMessage.appendChild(imgElement);
 
             if (message.caption) {
                 newMessage.appendChild(document.createElement('br')); 
@@ -615,24 +618,6 @@ async function addMessageToTerminal(message, token) {
         terminalOutput.scrollTop = terminalOutput.scrollHeight;
     }
 }
-
-
-async function getFilePath(token, fileId) {
-    try {
-        const response = await fetch(`https://api.telegram.org/bot${token}/getFile?file_id=${fileId}`);
-        const data = await response.json();
-        if (data.ok) {
-            return data.result.file_path;
-        } else {
-            throw new Error(data.description);
-        }
-    } catch (error) {
-        console.error('Error during getting file path:', error);
-        throw error;
-    }
-}
-
-
 
 async function getChatLink(token, chatId) {
     try {
@@ -854,13 +839,43 @@ async function handleIncomingMessage(message, token) {
 
         newMessage.appendChild(userLink);
         newMessage.appendChild(document.createElement('br'));
-        
+
         const chatInfoElement = document.createElement('span');
         chatInfoElement.innerHTML = chatInfo;
         newMessage.appendChild(chatInfoElement);
         newMessage.appendChild(document.createElement('br'));
 
-        if (message.photo) {
+        if (message.document) {
+            const fileId = message.document.file_id;
+            const fileName = message.document.file_name || 'file';
+            const filePath = await getFilePath(token, fileId);
+            const fileUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
+
+            // Проверяем, является ли документ WEBM файлом
+            if (fileName.endsWith('.webm')) {
+                const videoElement = document.createElement('video');
+                videoElement.src = fileUrl;
+                videoElement.style.maxWidth = '400px';
+                videoElement.style.maxHeight = '300px';
+                videoElement.style.width = 'auto';
+                videoElement.style.height = 'auto';
+                videoElement.controls = true;
+                newMessage.appendChild(videoElement);
+            } else {
+                const linkElement = document.createElement('a');
+                linkElement.href = fileUrl;
+                linkElement.textContent = `File: ${fileName}`;
+                linkElement.target = '_blank';
+                newMessage.appendChild(linkElement);
+            }
+
+            if (message.caption) {
+                newMessage.appendChild(document.createElement('br'));
+                const captionElement = document.createElement('span');
+                captionElement.textContent = ` ${message.caption}`;
+                newMessage.appendChild(captionElement);
+            }
+        } else if (message.photo) {
             const fileId = message.photo[message.photo.length - 1].file_id;
             const filePath = await getFilePath(token, fileId);
             const photoUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
@@ -881,44 +896,18 @@ async function handleIncomingMessage(message, token) {
         } else if (message.video || message.animation) {
             const fileId = message.video ? message.video.file_id : message.animation.file_id;
             const filePath = await getFilePath(token, fileId);
-            const videoUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
+            const fileUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
             const videoElement = document.createElement('video');
-            videoElement.src = videoUrl;
+            videoElement.src = fileUrl;
             videoElement.style.maxWidth = '400px';
             videoElement.style.maxHeight = '300px';
             videoElement.style.width = 'auto';
             videoElement.style.height = 'auto';
             videoElement.controls = true;
-
-            videoElement.addEventListener('click', () => {
-                if (videoElement.paused) {
-                    videoElement.play();
-                } else {
-                    videoElement.pause();
-                }
-            });
-
             newMessage.appendChild(videoElement);
 
             if (message.caption) {
-                newMessage.appendChild(document.createElement('br')); 
-                const captionElement = document.createElement('span');
-                captionElement.textContent = ` ${message.caption}`;
-                newMessage.appendChild(captionElement);
-            }
-        } else if (message.document) {
-            const fileId = message.document.file_id;
-            const fileName = message.document.file_name || 'file';
-            const filePath = await getFilePath(token, fileId);
-            const fileUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
-            const linkElement = document.createElement('a');
-            linkElement.href = fileUrl;
-            linkElement.textContent = `File: ${fileName}`;
-            linkElement.target = '_blank';
-            newMessage.appendChild(linkElement);
-
-            if (message.caption) {
-                newMessage.appendChild(document.createElement('br')); 
+                newMessage.appendChild(document.createElement('br'));
                 const captionElement = document.createElement('span');
                 captionElement.textContent = ` ${message.caption}`;
                 newMessage.appendChild(captionElement);
@@ -927,16 +916,31 @@ async function handleIncomingMessage(message, token) {
             const fileId = message.sticker.file_id;
             const filePath = await getFilePath(token, fileId);
             const stickerUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
-            const imgElement = document.createElement('img');
-            imgElement.src = stickerUrl;
-            imgElement.style.maxWidth = '400px';
-            imgElement.style.maxHeight = '300px';
-            imgElement.style.width = 'auto';
-            imgElement.style.height = 'auto';
-            newMessage.appendChild(imgElement);
+            
+
+            if (filePath.endsWith('.webm')) {
+
+                const videoElement = document.createElement('video');
+                videoElement.src = stickerUrl;
+                videoElement.style.maxWidth = '400px';
+                videoElement.style.maxHeight = '300px';
+                videoElement.style.width = 'auto';
+                videoElement.style.height = 'auto';
+                videoElement.controls = true;
+                newMessage.appendChild(videoElement);
+            } else {
+
+                const imgElement = document.createElement('img');
+                imgElement.src = stickerUrl;
+                imgElement.style.maxWidth = '400px';
+                imgElement.style.maxHeight = '300px';
+                imgElement.style.width = 'auto';
+                imgElement.style.height = 'auto';
+                newMessage.appendChild(imgElement);
+            }
 
             if (message.caption) {
-                newMessage.appendChild(document.createElement('br')); 
+                newMessage.appendChild(document.createElement('br'));
                 const captionElement = document.createElement('span');
                 captionElement.textContent = ` ${message.caption}`;
                 newMessage.appendChild(captionElement);
@@ -956,6 +960,7 @@ async function handleIncomingMessage(message, token) {
     terminalOutput.appendChild(newMessage);
     terminalOutput.scrollTop = terminalOutput.scrollHeight;
 }
+
 
 async function getChatLink(token, chatId) {
     try {
