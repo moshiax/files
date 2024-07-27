@@ -397,11 +397,10 @@ document.getElementById('telegram-photo-file').addEventListener('change', functi
     document.getElementById('file-chosen').innerText = fileName;
 });
 
-function sendTelegramMessage() {
+async function sendTelegramMessage() {
     const token = document.getElementById('telegram-token').value;
     const channelId = document.getElementById('telegram-channel-id').value;
     const message = document.getElementById('telegram-message').value.trim(); 
-    const photoUrl = document.getElementById('telegram-photo-url').value;
     const photoFile = document.getElementById('telegram-photo-file').files[0];
 
     if (!token || !channelId) {
@@ -409,7 +408,7 @@ function sendTelegramMessage() {
         return;
     }
 
-    if (!message && !photoFile && !photoUrl) {
+    if (!message && !photoFile) {
         showStatus('telegram-status', 'Please enter message or upload a file', false);
         return;
     }
@@ -418,55 +417,295 @@ function sendTelegramMessage() {
     formData.append('chat_id', channelId);
 
     let apiEndpoint = '';
-    let method = 'POST';
-
     if (photoFile) {
         const fileType = photoFile.type;
         if (fileType.startsWith('image/')) {
-            if (fileType === 'image/webp') {
-                apiEndpoint = 'sendDocument'; 
-                formData.append('document', photoFile); 
-            } else {
-                apiEndpoint = 'sendPhoto';   
-                formData.append('photo', photoFile);
+            apiEndpoint = 'sendPhoto';   
+            formData.append('photo', photoFile);
+
+            // Set caption if there's a text message
+            if (message) {
+                formData.append('caption', message);
             }
-        } else if (fileType.startsWith('video/')) {
-            apiEndpoint = 'sendVideo';
-            formData.append('video', photoFile);
         } else {
             apiEndpoint = 'sendDocument';
             formData.append('document', photoFile);
+
+            // Set caption if there's a text message
+            if (message) {
+                formData.append('caption', message);
+            }
         }
-    } else if (photoUrl) {
-        apiEndpoint = 'sendPhoto';
-        formData.append('photo', photoUrl);
     } else {
         apiEndpoint = 'sendMessage';
         if (message) formData.append('text', message); 
     }
 
-    if (apiEndpoint) {
-        fetch(`https://api.telegram.org/bot${token}/${apiEndpoint}`, {
-            method: method,
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${token}/${apiEndpoint}`, {
+            method: 'POST',
             body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.ok) {
-                showStatus('telegram-status', 'Message sent!', true);
-                updateSpamIndicator(true);
-            } else {
-                showStatus('telegram-status', 'Error during sending message: ' + data.description, false);
-                updateSpamIndicator(false);
-            }
-        })
-        .catch(error => {
-            console.error('Ошибка:', error);
-            showStatus('telegram-status', 'Error during sending message', false);
-            updateSpamIndicator(false);
         });
-    } else {
-        showStatus('telegram-status', 'Please select existing file or URL', false);
+        const data = await response.json();
+
+        if (data.ok) {
+            const sentMessage = data.result;
+            showStatus('telegram-status', 'Message sent!', true);
+            
+            // Обработка отправленного сообщения
+            await addMessageToTerminal(sentMessage, token);
+        } else {
+            showStatus('telegram-status', 'Error during sending message: ' + data.description, false);
+        }
+    } catch (error) {
+        console.error('Ошибка:', error);
+        showStatus('telegram-status', 'Error during sending message', false);
+    }
+}
+
+async function addMessageToTerminal(message, token) {
+    const terminalOutput = document.getElementById('terminal-output');
+    const newMessage = document.createElement('div');
+    newMessage.style.marginBottom = '10px';
+
+    const userLink = document.createElement('a');
+    let chatInfo = '';
+    let chatLink = '';
+
+    try {
+        // Получение информации о чате
+        if (message.chat) {
+            const chatId = message.chat.id;
+            const chatTitle = await getChatTitle(token, chatId);
+
+            try {
+                chatLink = await getChatLink(token, chatId);
+            } catch (error) {
+                console.error('Error getting chat link:', error);
+                try {
+                    chatLink = await getInviteLink(token, chatId);
+                } catch (error) {
+                    console.error('Error getting invite link:', error);
+                    try {
+                        chatLink = await createInviteLink(token, chatId);
+                    } catch (error) {
+                        console.error('Error creating invite link:', error);
+                        chatLink = ''; // Если все методы не сработали, оставляем ссылку пустой
+                    }
+                }
+            }
+
+            chatInfo = chatLink ? 
+                `<a href="${chatLink}" style="color: #58a6ff; text-decoration: none;" target="_blank">${chatTitle}</a> (ID: ${chatId})` : 
+                `Chat: ${chatTitle} (ID: ${chatId})`;
+        }
+
+        // Получение имени пользователя бота
+        const botUsername = await getBotUsername(token);
+        userLink.href = `tg://resolve?domain=${botUsername}`;
+        userLink.textContent = `@${botUsername}`;
+        userLink.style.color = '#58a6ff';
+        userLink.style.textDecoration = 'none';
+        userLink.target = '_blank';
+
+        newMessage.appendChild(userLink);
+        newMessage.appendChild(document.createElement('br'));
+
+        const chatInfoElement = document.createElement('span');
+        chatInfoElement.innerHTML = chatInfo;
+        newMessage.appendChild(chatInfoElement);
+        newMessage.appendChild(document.createElement('br'));
+
+        // Обработка различных типов сообщений
+        if (message.photo) {
+            const fileId = message.photo[message.photo.length - 1].file_id;
+            const filePath = await getFilePath(token, fileId);
+            const photoUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
+            const imgElement = document.createElement('img');
+            imgElement.src = photoUrl;
+            imgElement.style.maxWidth = '400px';
+            imgElement.style.maxHeight = '300px';
+            imgElement.style.width = 'auto';
+            imgElement.style.height = 'auto';
+            newMessage.appendChild(imgElement);
+
+            if (message.caption) {
+                newMessage.appendChild(document.createElement('br'));
+                const captionElement = document.createElement('span');
+                captionElement.textContent = ` ${message.caption}`;
+                newMessage.appendChild(captionElement);
+            }
+        } else if (message.video || message.animation) {
+            const fileId = message.video ? message.video.file_id : message.animation.file_id;
+            const filePath = await getFilePath(token, fileId);
+            const videoUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
+            const videoElement = document.createElement('video');
+            videoElement.src = videoUrl;
+            videoElement.style.maxWidth = '400px';
+            videoElement.style.maxHeight = '300px';
+            videoElement.style.width = 'auto';
+            videoElement.style.height = 'auto';
+            videoElement.controls = true;
+
+            videoElement.addEventListener('click', () => {
+                if (videoElement.paused) {
+                    videoElement.play();
+                } else {
+                    videoElement.pause();
+                }
+            });
+
+            newMessage.appendChild(videoElement);
+
+            if (message.caption) {
+                newMessage.appendChild(document.createElement('br')); 
+                const captionElement = document.createElement('span');
+                captionElement.textContent = ` ${message.caption}`;
+                newMessage.appendChild(captionElement);
+            }
+        } else if (message.document) {
+            const fileId = message.document.file_id;
+            const fileName = message.document.file_name || 'file';
+            const filePath = await getFilePath(token, fileId);
+            const fileUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
+            const linkElement = document.createElement('a');
+            linkElement.href = fileUrl;
+            linkElement.textContent = `File: ${fileName}`;
+            linkElement.target = '_blank';
+            newMessage.appendChild(linkElement);
+
+            if (message.caption) {
+                newMessage.appendChild(document.createElement('br')); 
+                const captionElement = document.createElement('span');
+                captionElement.textContent = ` ${message.caption}`;
+                newMessage.appendChild(captionElement);
+            }
+        } else if (message.sticker) {
+            const fileId = message.sticker.file_id;
+            const filePath = await getFilePath(token, fileId);
+            const stickerUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
+            const imgElement = document.createElement('img');
+            imgElement.src = stickerUrl;
+            imgElement.style.maxWidth = '400px';
+            imgElement.style.maxHeight = '300px';
+            imgElement.style.width = 'auto';
+            imgElement.style.height = 'auto';
+            newMessage.appendChild(imgElement);
+
+            if (message.caption) {
+                newMessage.appendChild(document.createElement('br')); 
+                const captionElement = document.createElement('span');
+                captionElement.textContent = ` ${message.caption}`;
+                newMessage.appendChild(captionElement);
+            }
+        } else if (message.text) {
+            const messageText = document.createElement('span');
+            messageText.textContent = ` ${message.text}`;
+            newMessage.appendChild(messageText);
+        } else {
+            newMessage.textContent = `New message from ${message.from.username}`;
+        }
+
+        terminalOutput.appendChild(newMessage);
+        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    } catch (error) {
+        console.error('Error processing message:', error);
+        newMessage.textContent = 'Error processing message';
+        terminalOutput.appendChild(newMessage);
+        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    }
+}
+
+
+async function getFilePath(token, fileId) {
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${token}/getFile?file_id=${fileId}`);
+        const data = await response.json();
+        if (data.ok) {
+            return data.result.file_path;
+        } else {
+            throw new Error(data.description);
+        }
+    } catch (error) {
+        console.error('Error during getting file path:', error);
+        throw error;
+    }
+}
+
+
+
+async function getChatLink(token, chatId) {
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${token}/getChat?chat_id=${chatId}`);
+        const data = await response.json();
+        if (data.ok && data.result.username) {
+            return `https://t.me/${data.result.username}`;
+        } else {
+            throw new Error('Public link not found');
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function getInviteLink(token, chatId) {
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${token}/exportChatInviteLink?chat_id=${chatId}`);
+        const data = await response.json();
+        if (data.ok && data.result) {
+            return data.result;
+        } else {
+            throw new Error('Invite link not found');
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+async function getChatTitle(token, chatId) {
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${token}/getChat?chat_id=${chatId}`);
+        const data = await response.json();
+        if (data.ok) {
+            return data.result.title || data.result.username || 'Unknown';
+        } else {
+            throw new Error('Failed to get chat title');
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function createInviteLink(token, chatId) {
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${token}/createChatInviteLink`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ chat_id: chatId })
+        });
+        const data = await response.json();
+        if (data.ok && data.result) {
+            return data.result.invite_link;
+        } else {
+            throw new Error('Error creating invite link');
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function getBotUsername(token) {
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${token}/getMe`);
+        const data = await response.json();
+        if (data.ok && data.result.username) {
+            return data.result.username;
+        } else {
+            throw new Error('Bot username not found');
+        }
+    } catch (error) {
+        throw error;
     }
 }
 
