@@ -851,7 +851,7 @@ async function handleIncomingMessage(message, token) {
             const filePath = await getFilePath(token, fileId);
             const fileUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
 
-            // Проверяем, является ли документ WEBM файлом
+
             if (fileName.endsWith('.webm')) {
                 const videoElement = document.createElement('video');
                 videoElement.src = fileUrl;
@@ -917,9 +917,9 @@ async function handleIncomingMessage(message, token) {
             const filePath = await getFilePath(token, fileId);
             const stickerUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
             
-
+            // Проверяем, является ли стикер WEBM
             if (filePath.endsWith('.webm')) {
-
+                // Обрабатываем WEBM стикер как видео
                 const videoElement = document.createElement('video');
                 videoElement.src = stickerUrl;
                 videoElement.style.maxWidth = '400px';
@@ -927,9 +927,11 @@ async function handleIncomingMessage(message, token) {
                 videoElement.style.width = 'auto';
                 videoElement.style.height = 'auto';
                 videoElement.controls = true;
+                videoElement.autoplay = true;
+                videoElement.loop = true;
                 newMessage.appendChild(videoElement);
             } else {
-
+                // Обрабатываем другие стикеры как изображения
                 const imgElement = document.createElement('img');
                 imgElement.src = stickerUrl;
                 imgElement.style.maxWidth = '400px';
@@ -938,7 +940,6 @@ async function handleIncomingMessage(message, token) {
                 imgElement.style.height = 'auto';
                 newMessage.appendChild(imgElement);
             }
-
             if (message.caption) {
                 newMessage.appendChild(document.createElement('br'));
                 const captionElement = document.createElement('span');
