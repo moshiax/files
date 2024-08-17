@@ -422,7 +422,6 @@
         const filesToFetch = [
             { name: "CreamInstaller.zip", download_url: "https://github.com/pointfeev/CreamInstaller/releases/latest/download/CreamInstaller.zip", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/CreamInstaller.png" },
             { name: "balenaEtcher", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/balenaEtcher-1.19.21.Setup.png" },
-            { name: "WarpGen.exe", download_url: "https://raw.githubusercontent.com/moshiax/files/main/etc/WarpGen.exe", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/etc/WarpGen.jpg" },
 			{ name: 'Photoshop 2024', download_url: 'https://raw.githubusercontent.com/moshiax/files/main/etc/Photoshop%202024.torrent', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/etc/Photoshop%202024.png' }
         ];
 
@@ -432,6 +431,7 @@
             { name: 'BeznogyCrypt', url: 'https://beznogycrypt.netlify.app', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/exe/beznogycrypt.png' },
             { name: 'botToken Manager', url: 'https://moshiax.github.io/files/tokenmanager', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/exe/tokenmanager.png' },			
             { name: 'botWebhook Manager', url: 'https://moshiax.github.io/files/discordmanager', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/exe/kozlinyadiscord.png' },	
+			{ name: "WarpGen", url: "https://warpgen.netlify.app", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/etc/WarpGen.jpg" },
         ];
 
         function renderExternalLinks() {
@@ -691,16 +691,7 @@ document.getElementById("cancel-hosts").onclick = () => {
 
 
 
-                if (fileName === "WarpGen") {
-                    const onlineButton = document.createElement("button");
-                    onlineButton.className = "button";
-                    onlineButton.innerText = "Online";
-                    onlineButton.onclick = (event) => {
-                        event.stopPropagation();
-                        window.open("https://warpgen.netlify.app", "_blank");
-                    };
-                    fileItem.appendChild(onlineButton);
-                }
+
 
                 fileItem.addEventListener('click', () => {
                     window.location.href = files[0].download_url;
