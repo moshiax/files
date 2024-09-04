@@ -565,6 +565,7 @@ function renderFiles() {
             const repoFiles = data.filter(file =>
                 file.name.endsWith('.exe') ||
                 file.name.endsWith('.rar') ||
+                file.name.endsWith('.zip') ||
                 file.name.endsWith('.torrent')
             );
             repoFiles.forEach(file => {
