@@ -379,6 +379,28 @@
 .modal-container.hide {
     display: none;
 }
+.button-extensions {
+    position: fixed;
+    top: 0; 
+    right: 0;
+    background-color: #1e232b; 
+    color: white;
+    border: none; 
+    border-radius: 0 0 0 50px; 
+    padding: 20px 60px; 
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s; 
+}
+
+.button-extensions:hover {
+    background-color: #003C7D;
+    opacity: 0.9; 
+}
+
+.button-extensions:focus {
+    outline: none; 
+}
 
     </style>
 </head>
@@ -390,6 +412,13 @@
 <div id="notification" class="notification hidden">
     Path copied to clipboard!
 </div>
+    <button class="button-extensions" onclick="goToExtensions()">Extensions</button>
+
+    <script>
+        function goToExtensions() {
+            window.location.href = 'extensions.html';
+        }
+    </script>
 
     <div id="modal" class="modal">
         <div class="modal-content">
@@ -556,6 +585,7 @@ function setIconColorAndHover(fileItem, iconElement, colors) {
 
     applyColor();
 }
+
 
 function renderFiles() {
 

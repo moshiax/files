@@ -379,6 +379,28 @@
 .modal-container.hide {
     display: none;
 }
+.button-extensions {
+    position: fixed;
+    top: 0; 
+    right: 0;
+    background-color: #1e232b; 
+    color: white;
+    border: none; 
+    border-radius: 0 0 0 50px; 
+    padding: 20px 60px; 
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s; 
+}
+
+.button-extensions:hover {
+    background-color: #003C7D;
+    opacity: 0.9; 
+}
+
+.button-extensions:focus {
+    outline: none; 
+}
 
     </style>
 </head>
@@ -390,7 +412,13 @@
 <div id="notification" class="notification hidden">
     Path copied to clipboard!
 </div>
+    <button class="button-extensions" onclick="goToExtensions()">Files</button>
 
+    <script>
+        function goToExtensions() {
+            window.location.href = 'index.html';
+        }
+    </script>
     <div id="modal" class="modal">
         <div class="modal-content">
             <h2>Warning!</h2>
@@ -415,7 +443,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const fileListElement = document.getElementById("file-list");
 
     const onlineMirrors = {
-        "421 Redirect.crx": "https://example.com/steam-redirect-online",
+        "Remove Youtube TV Button.crx": "https://chromewebstore.google.com/detail/remove-youtube-tv-button/lcblinegofgihklfnclgedlfcolbacpl",
+        "YoutubeNonStop.crx": "https://chromewebstore.google.com/detail/youtube-nonstop/nlkaejimjacpillmajjnopmpbkbnocid",
     };
 
     function setHoverColor(fileItem, color) {
@@ -479,8 +508,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
 
                 repoFiles.forEach(file => {
-                    const pngIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/extensions-icons/${file.name}.png`;
-                    const icoIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/extensions-icons/${file.name}.ico`;
+                    const fileNameWithoutExtension = file.name.replace('.crx', '');
+                    const pngIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/extensions-icons/${fileNameWithoutExtension}.png`;
+                    const icoIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/extensions-icons/${fileNameWithoutExtension}.ico`;
                     const defaultIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/extensions-icons/default.png`;
 
                     const fileItem = document.createElement("div");
@@ -494,6 +524,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         });
                     };
                     fileIcon.onerror = () => {
+                        console.log(`Icon not found: ${pngIconUrl}. Trying ICO version...`);
                         fileIcon.src = icoIconUrl;
                         fileIcon.onload = () => {
                             getDominantColor(icoIconUrl, (colors) => {
@@ -501,7 +532,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             });
                         };
                         fileIcon.onerror = () => {
-
+                            console.log(`Icon not found: ${icoIconUrl}. Trying default icon...`);
                             fileIcon.src = defaultIconUrl;
                             fileIcon.onload = () => {
                                 getDominantColor(defaultIconUrl, (colors) => {
@@ -518,7 +549,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     fileLink.href = file.download_url;
                     fileLink.target = "_self";
                     fileLink.className = "file-link";
-                    const fileNameWithoutExtension = file.name.replace('.crx', '');
                     fileLink.innerText = fileNameWithoutExtension;
 
                     fileItem.appendChild(fileIcon);
