@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        #app {
+            text-align: center;
+            width: 70%;
+        }
+.file-item:hover {
+    border-color: #58a6ff;
+    box-shadow: 0 0 1em rgba(88, 166, 255, 5.5);
+}
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.8);
+    }
+    50% {
+        box-shadow: 0 0 15px 10px rgba(255, 0, 0, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.8);
+    }
+}
+
+.modal-content.alert {
+    animation: pulse 2s infinite;
+    border-radius: 0.5em; 
+}
+
+
+        #file-list {
+            margin-top: 2em;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .file-item {
+            background-color: #161b22;
+            border: 0.1em solid #30363d;
+            border-radius: 0.375em;
+            padding: 1em;
+            margin: 1em;
+            width: calc(50% - 2em);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalFadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.modal {
+    display: none;
+}
+
+.modal.show {
+    display: flex;
+    animation: modalFadeIn 0.3s forwards;
+}
+
+.modal.hide {
+    animation: modalFadeOut 0.3s forwards;
+}
+
+
+        @media (max-width: 48em) {
+            .file-item {
+                width: calc(100% - 2em);
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .file-link {
+                flex-grow: 1;
+            }
+
+            .button {
+                margin-top: 1em;
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        .file-item img {
+            width: 3em;
+            height: 3em;
+            margin-right: 1em;
+        }
+
+        .file-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            flex-grow: 1;
+        }
+
+.online-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 0.1875em;
+    cursor: pointer;
+    margin-left: 1em;
+    padding: 0.5em 1em;
+    font-size: 0.875em;
+    white-space: nowrap;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+.online-button:hover {
+    background-color: #218838; 
+    opacity: 0.9; 
+}
+
+#confirm-download {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 0.1875em;
+    cursor: pointer;
+    padding: 0.5em 1em;
+    font-size: 0.875em;
+    white-space: nowrap;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+#confirm-download:not([disabled]):hover {
+    background-color: #218838; 
+    opacity: 0.9;
+}
+
+#confirm-download:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+
+        .hidden {
+            display: none;
+        }
+
+        .expanded-content {
+            margin-top: 1em;
+            text-align: left;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            opacity: 0;
+        }
+
+        .expanded-content.expanded {
+            max-height: 30em;
+            opacity: 1;
+        }
+
+        .expanded-content a {
+            display: block;
+            color: white;
+            margin-bottom: 0.5em;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #161b22;
+            margin: auto;
+            padding: 1em;
+            border: 1px solid #30363d;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            color: #c9d1d9;
+        }
+
+        .modal-content h2 {
+            color: #ff4d4d;
+        }
+
+        .modal-content input {
+            margin-top: 1em;
+            padding: 0.5em;
+            width: 80%;
+        }
+
+        .modal-content button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 0.1875em;
+            cursor: pointer;
+            padding: 0.5em 1em;
+            font-size: 0.875em;
+            white-space: nowrap;
+            margin-top: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .modal-content button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+.file-item:hover {
+    border-color: var(--hover-color);
+    box-shadow: 0 0 1em var(--hover-color);
+}
+.button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 0.1875em;
+    cursor: pointer;
+    margin-left: 1em;
+    padding: 0.5em 1em;
+    font-size: 0.875em;
+    white-space: nowrap;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+.button:hover {
+    background-color: #218838;
+    opacity: 0.9;
+}
+
+.button:focus {
+    outline: none;
+}
+
+.button.pulse {
+    animation: pulse 2s infinite;
+}
+
+.modal-content h2 {
+    color: #ff4d4d;
+}
+
+#hosts-modal {
+    display: none;
+}
+
+#hosts-modal.show {
+    display: flex;
+    animation: modalFadeIn 0.3s forwards;
+}
+
+#hosts-modal.hide {
+    animation: modalFadeOut 0.3s forwards;
+}
+
+#hosts-modal .modal-content {
+    background-color: #161b22;
+    margin: auto;
+    padding: 1em;
+    border: 1px solid #30363d;
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+    color: #c9d1d9;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1em;
+}
+
+.modal-buttons button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 0.1875em;
+    cursor: pointer;
+    padding: 0.5em 1em;
+    font-size: 0.875em;
+    white-space: nowrap;
+    transition: background-color 0.3s;
+    flex: 1;
+    margin: 0 0.5em;
+}
+
+.modal-buttons button:hover {
+    background-color: #218838;
+    opacity: 0.9;
+}
+
+.modal-buttons button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    font-family: Arial, sans-serif;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.notification.show {
+    opacity: 1;
+}
+.notification.hidden {
+    display: none;
+}
+.modal-container {
+    display: none; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #00000;
+    padding: 20px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.modal-container.show {
+    display: flex;
+}
+
+.modal-container.hide {
+    display: none;
+}
+
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="file-list"></div>
+    </div>
+
+<div id="notification" class="notification hidden">
+    Path copied to clipboard!
+</div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Warning!</h2>
+            <p>You are about to download obfuscator.exe. This file is real obfuscator.exe. If you are sure you want to download it, please type <strong>obfuscator.exe</strong> below to confirm.</p>
+            <input type="text" id="confirmation-input" placeholder="Type obfuscator.exe to confirm">
+            <button id="confirm-download" disabled>Download</button>
+        </div>
+    </div>
+<div id="hosts-modal" class="modal-container">
+    <div class="modal-content">
+                <h2>Hosts</h2>
+        <button id="copy-path">Copy Path</button>
+        <button id="cancel-hosts">Cancel</button>
+		<button id="confirm-hosts-download">Download Hosts</button>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const repoOwner = "moshiax";
+    const repoName = "files";
+    const filePath = "extensions";
+    const fileListElement = document.getElementById("file-list");
+
+    const onlineMirrors = {
+        "421 Redirect.crx": "https://example.com/steam-redirect-online",
+    };
+
+    function setHoverColor(fileItem, color) {
+        const threshold = 50;
+        const [r, g, b] = color;
+        if (r < threshold && g < threshold && b < threshold) {
+            fileItem.style.setProperty('--hover-color', 'rgba(75, 0, 130, 0.5)');
+        } else {
+            fileItem.style.setProperty('--hover-color', `rgba(${r}, ${g}, ${b}, 0.5)`);
+        }
+    }
+
+    function getDominantColor(imageUrl, callback) {
+        const colorThief = new ColorThief();
+        const img = new Image();
+        img.crossOrigin = 'Anonymous';
+        img.onload = function() {
+            const dominantColors = colorThief.getPalette(img, 5);
+            callback(dominantColors);
+        };
+        img.src = imageUrl;
+    }
+
+    function setIconColorAndHover(fileItem, iconElement, colors) {
+        let colorIndex = 0;
+
+        function applyColor() {
+            const color = colors[colorIndex];
+            if (!color) {
+                fileItem.style.setProperty('--hover-color', 'rgba(75, 0, 130, 0.5)');
+                return;
+            }
+
+            const [r, g, b] = color;
+            if (r < 50 && g < 50 && b < 50) {
+                colorIndex++;
+                applyColor();
+            } else {
+                iconElement.style.filter = `drop-shadow(0 0 5px rgba(${r}, ${g}, ${b}, 0.5))`;
+                fileItem.style.setProperty('--hover-color', `rgba(${r}, ${g}, ${b}, 0.5)`);
+            }
+        }
+
+        applyColor();
+    }
+
+    function renderFiles() {
+        console.log(`Fetching files from https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`);
+
+        fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched data:', data); 
+
+                const repoFiles = data.filter(file => file.name.endsWith('.crx'));
+                console.log('Filtered .crx files:', repoFiles);
+
+                if (repoFiles.length === 0) {
+                    console.log('No .crx files found.');
+                    return;
+                }
+
+                repoFiles.forEach(file => {
+                    const pngIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/extensions-icons/${file.name}.png`;
+                    const icoIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/extensions-icons/${file.name}.ico`;
+                    const defaultIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/extensions-icons/default.png`;
+
+                    const fileItem = document.createElement("div");
+                    fileItem.className = "file-item";
+
+                    const fileIcon = document.createElement("img");
+                    fileIcon.src = pngIconUrl;
+                    fileIcon.onload = () => {
+                        getDominantColor(pngIconUrl, (colors) => {
+                            setIconColorAndHover(fileItem, fileIcon, colors);
+                        });
+                    };
+                    fileIcon.onerror = () => {
+                        fileIcon.src = icoIconUrl;
+                        fileIcon.onload = () => {
+                            getDominantColor(icoIconUrl, (colors) => {
+                                setIconColorAndHover(fileItem, fileIcon, colors);
+                            });
+                        };
+                        fileIcon.onerror = () => {
+
+                            fileIcon.src = defaultIconUrl;
+                            fileIcon.onload = () => {
+                                getDominantColor(defaultIconUrl, (colors) => {
+                                    setIconColorAndHover(fileItem, fileIcon, colors);
+                                });
+                            };
+                            fileIcon.onerror = () => {
+                                console.error(`Neither PNG, ICO, nor default icon were found for ${file.name}`);
+                            };
+                        };
+                    };
+
+                    const fileLink = document.createElement("a");
+                    fileLink.href = file.download_url;
+                    fileLink.target = "_self";
+                    fileLink.className = "file-link";
+                    const fileNameWithoutExtension = file.name.replace('.crx', '');
+                    fileLink.innerText = fileNameWithoutExtension;
+
+                    fileItem.appendChild(fileIcon);
+                    fileItem.appendChild(fileLink);
+
+                    if (onlineMirrors[file.name]) {
+                        const onlineButton = document.createElement("button");
+                        onlineButton.innerText = "Online Version";
+                        onlineButton.className = "online-button";
+                        onlineButton.addEventListener('click', (event) => {
+                            event.stopPropagation(); 
+                            window.open(onlineMirrors[file.name], '_blank'); 
+                        });
+                        fileItem.appendChild(onlineButton);
+                    }
+
+                    fileItem.addEventListener('click', () => {
+                        window.location.href = file.download_url;
+                    });
+
+                    fileListElement.appendChild(fileItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching files:', error);
+            });
+    }
+
+    renderFiles();
+});
+
+</script>
+
+</body>
+</html>
