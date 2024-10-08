@@ -522,7 +522,7 @@ function closeHostsModal() {
 
 document.getElementById("copy-path").onclick = () => {
     const tempInput = document.createElement('input');
-    tempInput.value = "C:/Windows/System32/Drivers/etc/hosts";
+    tempInput.value = "C:/Windows/System32/Drivers/etc/";
     document.body.appendChild(tempInput);
     tempInput.select();
     document.execCommand('copy');
