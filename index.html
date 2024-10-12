@@ -664,7 +664,7 @@ function renderFiles() {
                     };
                     fileItem.appendChild(downloadButton);
                 }
-if (fileName === "Photoshop 2024") {
+if (fileName === "Photoshop 2024" || fileName === "Wondershare Filmora (UNVERIFIED)") {
     const downloadHostsButton = document.createElement("button");
     downloadHostsButton.className = "button";
     downloadHostsButton.innerText = "hosts";
@@ -674,7 +674,6 @@ if (fileName === "Photoshop 2024") {
     };
     fileItem.appendChild(downloadHostsButton);
 }
-
 document.getElementById("copy-path").onclick = () => {
 
     const tempInput = document.createElement('input');
