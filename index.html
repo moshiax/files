@@ -521,12 +521,14 @@ function closeHostsModal() {
 }
 
 document.getElementById("copy-path").onclick = () => {
+
     const tempInput = document.createElement('input');
     tempInput.value = "C:/Windows/System32/Drivers/etc/";
     document.body.appendChild(tempInput);
     tempInput.select();
     document.execCommand('copy');
     document.body.removeChild(tempInput);
+
 
     const notification = document.getElementById("notification");
     notification.classList.remove('hidden');
@@ -536,6 +538,7 @@ document.getElementById("copy-path").onclick = () => {
         notification.classList.add('hidden');
     }, 3000);
 };
+
 
 document.getElementById("confirm-hosts-download").onclick = () => {
     const hostsUrl = "https://raw.githubusercontent.com/moshiax/files/main/etc/hosts.txt";
@@ -674,24 +677,6 @@ if (fileName === "Photoshop 2024" || fileName === "Wondershare Filmora (UNVERIFI
     };
     fileItem.appendChild(downloadHostsButton);
 }
-document.getElementById("copy-path").onclick = () => {
-
-    const tempInput = document.createElement('input');
-    tempInput.value = "C:/Windows/System32/Drivers/etc/hosts";
-    document.body.appendChild(tempInput);
-    tempInput.select();
-    document.execCommand('copy');
-    document.body.removeChild(tempInput);
-
-
-    const notification = document.getElementById("notification");
-    notification.classList.remove('hidden');
-    notification.classList.add('show');
-    setTimeout(() => {
-        notification.classList.remove('show');
-        notification.classList.add('hidden');
-    }, 3000);
-};
 
 document.getElementById("confirm-hosts-download").onclick = () => {
     const hostsUrl = "https://raw.githubusercontent.com/moshiax/files/main/etc/hosts.txt";
