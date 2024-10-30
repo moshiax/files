@@ -379,32 +379,58 @@
 .modal-container.hide {
     display: none;
 }
-.button-extensions {
+.button-container {
     position: fixed;
-    top: 0; 
+    top: 0;
     right: 0;
-    background-color: #1e232b; 
-    color: white;
-    border: none; 
-    border-radius: 0 0 0 50px; 
-    padding: 20px 60px; 
+    display: flex;
+    border-radius: 0 0 0 50px;
+    overflow: hidden;
     font-size: 20px;
+}
+
+.button-half {
+    padding: 20px 30px;
+    background-color: #1e232b;
+    color: white;
+    border: none;
     cursor: pointer;
-    transition: background-color 0.3s; 
+    transition: background-color 0.3s;
+    outline: none;
+    font-size: 20px;
 }
 
-.button-extensions:hover {
+.left-button {
+    border-radius: 0 0 0 25px;
+}
+
+.right-button {
+    border-radius: 0 0 25px 0;
+}
+
+.button-half:hover {
     background-color: #003C7D;
-    opacity: 0.9; 
+    opacity: 0.9;
 }
 
-.button-extensions:focus {
-    outline: none; 
-}
 
     </style>
 </head>
 <body>
+<div class="button-container">
+    <button class="button-half left-button" onclick="goToExtensions()">Extensions</button>
+    <button class="button-half right-button" onclick="goToLinks()">Links</button>
+</div>
+
+<script>
+    function goToExtensions() {
+        window.location.href = 'extensions.html';
+    }
+
+    function goToLinks() {
+        window.location.href = 'links.html';
+    }
+</script>
     <div id="app">
         <div id="file-list"></div>
     </div>
@@ -412,13 +438,7 @@
 <div id="notification" class="notification hidden">
     Path copied to clipboard!
 </div>
-    <button class="button-extensions" onclick="goToExtensions()">Extensions</button>
 
-    <script>
-        function goToExtensions() {
-            window.location.href = 'extensions.html';
-        }
-    </script>
 
     <div id="modal" class="modal">
         <div class="modal-content">
@@ -449,18 +469,12 @@
         const confirmDownloadButton = document.getElementById("confirm-download");
 
         const filesToFetch = [
-            { name: "CreamInstaller.zip", download_url: "https://github.com/pointfeev/CreamInstaller/releases/latest/download/CreamInstaller.zip", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/CreamInstaller.png" },
-            { name: "balenaEtcher", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/balenaEtcher-1.19.21.Setup.png" },
-			{ name: 'Photoshop 2024', download_url: 'https://raw.githubusercontent.com/moshiax/files/main/etc/Photoshop%202024.torrent', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/etc/Photoshop%202024.png' }
+            { name: "CreamInstaller", download_url: "https://roaring-starship-2d8530.netlify.app/CreamInstaller.exe", icon_url: "exe/CreamInstaller.png" },
+            { name: "balenaEtcher", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon_url: "exe/balenaEtcher-1.19.21.Setup.png" },
+			{ name: 'Photoshop 2024', download_url: 'etc/Photoshop%202024.torrent', icon_url: 'etc/Photoshop%202024.png' }
         ];
 
         const externalLinks = [
-            { name: "Triage", url: "https://tria.ge", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/exe/triage.png" },
-            { name: 'Smail', url: 'https://smailpro.com/temporary-email', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/exe/smail.png' },
-            { name: 'BeznogyCrypt', url: 'https://beznogycrypt.netlify.app', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/exe/beznogycrypt.png' },
-            { name: 'botToken Manager', url: 'https://moshiax.github.io/files/tokenmanager', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/exe/tokenmanager.png' },			
-            { name: 'botWebhook Manager', url: 'https://moshiax.github.io/files/discordmanager', icon_url: 'https://raw.githubusercontent.com/moshiax/files/main/exe/kozlinyadiscord.png' },	
-			{ name: "WarpGen", url: "https://warpgen.netlify.app", icon_url: "https://raw.githubusercontent.com/moshiax/files/main/etc/WarpGen.jpg" },
         ];
 
         function renderExternalLinks() {
@@ -719,51 +733,20 @@ document.getElementById("cancel-hosts").onclick = () => {
         })
         .catch(error => console.error('Error fetching files:', error));
 }
-function renderExternalLinks() {
-    externalLinks.forEach(link => {
-        const linkItem = document.createElement("div");
-        linkItem.className = "file-item";
-
-        const linkIcon = document.createElement("img");
-        linkIcon.src = link.icon_url;
-        linkIcon.onload = () => {
-            getDominantColor(link.icon_url, (colors) => {
-                setIconColorAndHover(linkItem, linkIcon, colors);
-            });
-        };
-        linkIcon.onerror = () => {
-            console.error(`Icon not found for ${link.name}`);
-        };
-
-        const linkAnchor = document.createElement("a");
-        linkAnchor.href = link.url;
-        linkAnchor.target = "_blank";
-        linkAnchor.className = "file-link";
-        linkAnchor.innerText = link.name;
-
-        linkAnchor.prepend(linkIcon);
-
-        linkItem.appendChild(linkAnchor);
-        fileListElement.appendChild(linkItem);
-    });
-
-    renderTihiyDomItem();
-}
-
 
         function renderObfuscatorFile() {
             const obfuscatorFile = {
                 name: "obfuscator.exe",
-                download_url: "https://raw.githubusercontent.com/moshiax/files/main/etc/obfuscator.exe"
+                download_url: "etc/obfuscator.exe"
             };
 
             const fileItem = document.createElement("div");
             fileItem.className = "file-item";
 
             const fileIcon = document.createElement("img");
-            fileIcon.src = "https://raw.githubusercontent.com/moshiax/files/main/exe/obfuscator.png";
+            fileIcon.src = "exe/obfuscator.png";
             fileIcon.onerror = () => {
-                fileIcon.src = "https://raw.githubusercontent.com/moshiax/files/main/exe/obfuscator.ico";
+                fileIcon.src = "exe/obfuscator.ico";
                 fileIcon.onerror = () => {
                     console.error(`Neither PNG nor ICO icons were found for obfuscator.exe`);
                 };

@@ -419,185 +419,99 @@
 <body>
 <div class="button-container">
     <button class="button-half left-button" onclick="goToExtensions()">Files</button>
-    <button class="button-half right-button" onclick="goToLinks()">Links</button>
+    <button class="button-half right-button" onclick="goToLinks()">Extensions</button>
 </div>
 
 <script>
     function goToExtensions() {
-        window.location.href = 'index.html';
+        window.location.href = 'extensions.html';
     }
 
     function goToLinks() {
         window.location.href = 'links.html';
     }
 </script>
+
     <div id="app">
         <div id="file-list"></div>
     </div>
 
+    <script>
+        const siteLinks = [
+            { name: "Neiki", url: "https://tip.neiki.dev", icon: "sites-icons/Neiki.png" },
+            { name: "Triage", url: "https://tria.ge", icon: "exe/triage.png" },
+            { name: 'Smail', url: 'https://smailpro.com/temporary-email', icon: 'exe/smail.png' },
+            { name: 'BeznogyCrypt', url: 'https://beznogycrypt.netlify.app', icon: 'exe/beznogycrypt.png' },
+            { name: 'botToken Manager', url: 'https://moshiax.github.io/files/tokenmanager', icon: 'exe/tokenmanager.png' },			
+            { name: 'botWebhook Manager', url: 'https://moshiax.github.io/files/discordmanager', icon: 'exe/kozlinyadiscord.png' },	
+			{ name: "WarpGen", url: "https://warpgen.netlify.app", icon: "etc/WarpGen.jpg" },
+			
+        ];
 
-
-    </div>
-<div id="hosts-modal" class="modal-container">
-    <div class="modal-content">
-                <h2>Hosts</h2>
-        <button id="copy-path">Copy Path</button>
-        <button id="cancel-hosts">Cancel</button>
-		<button id="confirm-hosts-download">Download Hosts</button>
-    </div>
-</div>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const repoOwner = "moshiax";
-    const repoName = "files";
-    const filePath = "extensions";
-    const fileListElement = document.getElementById("file-list");
-
-    const onlineMirrors = {
-        "AdGuard.crx": "https://chromewebstore.google.com/detail/adguard-adblocker/bgnkhhnnamicmpeenaelnjfhikgbkllg",
-        "Linguist.crx": "https://chromewebstore.google.com/detail/gbefmodhlophhakmoecijeppjblibmie",
-        "SaveFrom.crx": "https://en1.savefrom.net/2ol/",
-        "ReplicateUI.crx": "https://github.com/moshiax/ReplicateUI/releases/tag/release",
-        "SteamRedirect.crx": "https://github.com/moshiax/SteamRedirect/releases/tag/release",
-        "Discord Token Login.crx": "https://chromewebstore.google.com/detail/kfjglmgfjedhhcddpfgfogkahmenikan",
-        "OffYTBullshit.crx": "https://github.com/moshiax/Off-Youtube-Bullshit/releases/tag/Release",
-        "uBlock Origin.crx": "https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm",
-    };
-
-    function setHoverColor(fileItem, color) {
-        const threshold = 50;
-        const [r, g, b] = color;
-        if (r < threshold && g < threshold && b < threshold) {
-            fileItem.style.setProperty('--hover-color', 'rgba(75, 0, 130, 0.5)');
-        } else {
-            fileItem.style.setProperty('--hover-color', `rgba(${r}, ${g}, ${b}, 0.5)`);
-        }
-    }
-
-    function getDominantColor(imageUrl, callback) {
-        const colorThief = new ColorThief();
-        const img = new Image();
-        img.crossOrigin = 'Anonymous';
-        img.onload = function() {
-            const dominantColors = colorThief.getPalette(img, 5);
-            callback(dominantColors);
-        };
-        img.src = imageUrl;
-    }
-
-    function setIconColorAndHover(fileItem, iconElement, colors) {
-        let colorIndex = 0;
-
-        function applyColor() {
-            const color = colors[colorIndex];
-            if (!color) {
-                fileItem.style.setProperty('--hover-color', 'rgba(75, 0, 130, 0.5)');
-                return;
-            }
-
-            const [r, g, b] = color;
-            if (r < 50 && g < 50 && b < 50) {
-                colorIndex++;
-                applyColor();
-            } else {
-                iconElement.style.filter = `drop-shadow(0 0 5px rgba(${r}, ${g}, ${b}, 0.5))`;
-                fileItem.style.setProperty('--hover-color', `rgba(${r}, ${g}, ${b}, 0.5)`);
-            }
+        function getDominantColor(imageUrl, callback) {
+            const colorThief = new ColorThief();
+            const img = new Image();
+            img.crossOrigin = 'Anonymous';
+            img.onload = function() {
+                const dominantColors = colorThief.getPalette(img, 5);
+                callback(dominantColors);
+            };
+            img.src = imageUrl;
         }
 
-        applyColor();
-    }
+        function setIconColorAndHover(fileItem, iconElement, colors) {
+            let colorIndex = 0;
 
-    function renderFiles() {
-        console.log(`Fetching files from https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`);
-
-        fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log('Fetched data:', data); 
-
-                const repoFiles = data.filter(file => file.name.endsWith('.crx'));
-                console.log('Filtered .crx files:', repoFiles);
-
-                if (repoFiles.length === 0) {
-                    console.log('No .crx files found.');
+            function applyColor() {
+                const color = colors[colorIndex];
+                if (!color) {
+                    fileItem.style.setProperty('--hover-color', 'rgba(75, 0, 130, 0.5)');
                     return;
                 }
 
-                repoFiles.forEach(file => {
-                    const fileNameWithoutExtension = file.name.replace('.crx', '');
-                    const pngIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/extensions-icons/${fileNameWithoutExtension}.png`;
-                    const icoIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/extensions-icons/${fileNameWithoutExtension}.ico`;
-                    const defaultIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/extensions-icons/default.png`;
+                const [r, g, b] = color;
+                if (r < 50 && g < 50 && b < 50) {
+                    colorIndex++;
+                    applyColor();
+                } else {
+                    iconElement.style.filter = `drop-shadow(0 0 5px rgba(${r}, ${g}, ${b}, 0.5))`;
+                    fileItem.style.setProperty('--hover-color', `rgba(${r}, ${g}, ${b}, 0.5)`);
+                }
+            }
 
-                    const fileItem = document.createElement("div");
-                    fileItem.className = "file-item";
+            applyColor();
+        }
 
-                    const fileIcon = document.createElement("img");
-                    fileIcon.src = pngIconUrl;
-                    fileIcon.onload = () => {
-                        getDominantColor(pngIconUrl, (colors) => {
-                            setIconColorAndHover(fileItem, fileIcon, colors);
-                        });
-                    };
-                    fileIcon.onerror = () => {
-                        console.log(`Icon not found: ${pngIconUrl}. Trying ICO version...`);
-                        fileIcon.src = icoIconUrl;
-                        fileIcon.onload = () => {
-                            getDominantColor(icoIconUrl, (colors) => {
-                                setIconColorAndHover(fileItem, fileIcon, colors);
-                            });
-                        };
-                        fileIcon.onerror = () => {
-                            console.log(`Icon not found: ${icoIconUrl}. Trying default icon...`);
-                            fileIcon.src = defaultIconUrl;
-                            fileIcon.onload = () => {
-                                getDominantColor(defaultIconUrl, (colors) => {
-                                    setIconColorAndHover(fileItem, fileIcon, colors);
-                                });
-                            };
-                            fileIcon.onerror = () => {
-                                console.error(`Neither PNG, ICO, nor default icon were found for ${file.name}`);
-                            };
-                        };
-                    };
+        function renderSites() {
+            const fileListElement = document.getElementById("file-list");
 
-                    const fileLink = document.createElement("a");
-                    fileLink.href = file.download_url;
-                    fileLink.target = "_self";
-                    fileLink.className = "file-link";
-                    fileLink.innerText = fileNameWithoutExtension;
+            siteLinks.forEach(site => {
+                const fileItem = document.createElement("div");
+                fileItem.className = "file-item";
 
-                    fileItem.appendChild(fileIcon);
-                    fileItem.appendChild(fileLink);
+                fileItem.onclick = () => {
+                    window.open(site.url, "_blank");
+                };
 
-                    if (onlineMirrors[file.name]) {
-                        const onlineButton = document.createElement("button");
-                        onlineButton.innerText = "   Web   ";
-                        onlineButton.className = "online-button";
-                        onlineButton.addEventListener('click', (event) => {
-                            event.stopPropagation(); 
-                            window.open(onlineMirrors[file.name], '_blank'); 
-                        });
-                        fileItem.appendChild(onlineButton);
-                    }
-
-                    fileItem.addEventListener('click', () => {
-                        window.location.href = file.download_url;
+                const fileIcon = document.createElement("img");
+                fileIcon.src = site.icon;
+                fileIcon.onload = () => {
+                    getDominantColor(site.icon, (colors) => {
+                        setIconColorAndHover(fileItem, fileIcon, colors);
                     });
+                };
 
-                    fileListElement.appendChild(fileItem);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching files:', error);
+                const fileLink = document.createElement("span"); 
+                fileLink.className = "file-link";
+                fileLink.innerText = site.name;
+
+                fileItem.appendChild(fileIcon);
+                fileItem.appendChild(fileLink);
+                fileListElement.appendChild(fileItem);
             });
-    }
+        }
 
-    renderFiles();
-});
-
-</script>
-
+        renderSites();
+    </script>
 </body>
 </html>
