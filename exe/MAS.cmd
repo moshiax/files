@@ -1,17 +1,6 @@
 @set masver=2.8
 @echo off
 
-
-
-::============================================================================
-::
-::   Homepage: mass grave[.]dev
-::      Email: mas.help@outlook.com
-::
-::============================================================================
-
-
-
 ::  To activate Windows with K-M-S activation, run the script with "/K-Windows" parameter or change 0 to 1 in below line
 set _actwin=0
 
