@@ -94,7 +94,6 @@
 }
 
 .notification {
-  display: none;
   position: fixed;
   bottom: 20px;
   left: 50%;
@@ -349,21 +348,43 @@
     background-color: #555;
     cursor: not-allowed;
 }
-
-.notification {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    background-color: #333;
-    color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    font-family: Arial, sans-serif;
-    z-index: 1000;
+@keyframes fadeIn {
+  from {
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transform: translateX(-50%) translateY(20px)
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0)
+  }
 }
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0)
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px)
+  }
+}
+.notification {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 20px;
+  background-color: rgba(0,0,0,.8);
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,.5);
+  font-size: 1.5rem;
+  text-align: center;
+  z-index: 10000000;
+  animation: fadeIn .5s ease-in-out,fadeOut .5s ease-in-out 1s
+}
+
 
 .notification.show {
     opacity: 1;
@@ -371,6 +392,7 @@
 .notification.hidden {
     display: none;
 }
+
 .modal-container {
     display: none; 
     position: fixed;
@@ -434,6 +456,10 @@
 
     </style>
 </head>
+<div id="notification" class="notification">
+    <p>NieR:Automata is not available in your country in Steam. Switched to the USA.</p>
+</div>
+
 <body>
 <div class="button-container">
     <button class="button-half left-button" onclick="goToExtensions()">Extensions</button>
@@ -453,9 +479,7 @@
         <div id="file-list"></div>
     </div>
 
-<div id="notification" class="notification hidden">
-    Path copied to clipboard!
-</div>
+
 
 
     <div id="modal" class="modal">
@@ -474,11 +498,39 @@
 		<button id="confirm-hosts-download">Download Hosts</button>
     </div>
 </div>
-<div id="notification" class="notification">
-    <p>.</p>
-</div>
+
 
 <script>
+
+function showNotification(message) {
+
+    let formattedMessage = message.replace(/\n/g, '<br>').replace(/\[(H|P|N|Q)\]/g, match => 
+        `<span class="notification-key" data-key="${match}">${match}</span>`
+    );
+
+    const discountPercentMatch = message.match(/Discount percent is (\d+)%/);
+    if (discountPercentMatch) {
+        const discountPercent = discountPercentMatch[1];
+        formattedMessage = formattedMessage.replace(
+            `Discount percent is ${discountPercent}%`, 
+            `<span class="discount-highlight">Discount percent is <b>${discountPercent}%</b></span>`
+        );
+    }
+
+    const notification = document.getElementById('notification');
+    notification.querySelector('p').innerHTML = formattedMessage;
+    notification.style.display = 'block';
+    notification.style.animation = 'fadeIn 0.5s ease-in-out';
+
+    setTimeout(() => {
+        notification.style.animation = 'fadeOut 0.5s ease-in-out';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 500);
+    }, 2300);
+}
+
+
     document.addEventListener("DOMContentLoaded", function() {
         const repoOwner = "moshiax";
         const repoName = "files";
@@ -625,6 +677,7 @@ function renderFiles() {
             const repoFiles = data.filter(file =>
                 file.name.endsWith('.exe') ||
                 file.name.endsWith('.rar') ||
+                file.name.endsWith('.msi') ||
                 file.name.endsWith('.zip') ||
 				file.name.endsWith('.cmd') ||
                 file.name.endsWith('.torrent')
@@ -636,8 +689,8 @@ function renderFiles() {
             const processedFiles = {};
 
             filesToFetch.forEach(file => {
-                const fileName = file.name.replace(/\.(exe|cmd|rar|zip|torrent)$/, '');
-                const parentFileName = file.parent ? file.parent.replace(/\.(exe|rar|cmd|zip|torrent)$/, '') : null;
+                const fileName = file.name.replace(/\.(exe|cmd|rar|msi|zip|torrent)$/, '');
+                const parentFileName = file.parent ? file.parent.replace(/\.(exe|rar|cmd|msi|zip|torrent)$/, '') : null;
 
                 if (parentFileName) {
                     if (!processedFiles[parentFileName]) {
@@ -684,7 +737,16 @@ function renderFiles() {
 
                 fileItem.appendChild(fileIcon);
                 fileItem.appendChild(fileLink);
-
+                if (fileName === "Flameshot") {
+                    const downloadButton = document.createElement("button");
+                    downloadButton.className = "button";
+                    downloadButton.innerText = "Lightshot";
+                    downloadButton.onclick = (event) => {
+                        event.stopPropagation();
+                        window.location.href = "etc/Lightshot.exe";
+                    };
+                    fileItem.appendChild(downloadButton);
+                }
                 if (fileName === "CreamInstaller") {
                     const downloadButton = document.createElement("button");
                     downloadButton.className = "button";
@@ -761,20 +823,6 @@ document.getElementById("cancel-hosts").onclick = () => {
         })
         .catch(error => console.error('Error fetching files:', error));
 }
-function showNotification(message) {
-    const notification = document.getElementById('notification');
-    notification.querySelector('p').innerHTML = message;
-    notification.style.display = 'block';
-    notification.style.animation = 'fadeIn 0.5s ease-in-out';
-
-    setTimeout(() => {
-        notification.style.animation = 'fadeOut 0.5s ease-in-out';
-        setTimeout(() => {
-            notification.style.display = 'none';
-        }, 500);
-    }, 2300);
-}
-
         function renderObfuscatorFile() {
             const obfuscatorFile = {
                 name: "obfuscator.exe",
