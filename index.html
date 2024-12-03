@@ -93,6 +93,24 @@
     animation: modalFadeOut 0.3s forwards;
 }
 
+.notification {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 20px;
+  background-color: rgba(0,0,0,.8);
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,.5);
+  font-size: 1.5rem;
+  text-align: center;
+  z-index: 10000000;
+  animation: fadeIn .5s ease-in-out,fadeOut .5s ease-in-out 1s
+}
+
+
 
         @media (max-width: 48em) {
             .file-item {
@@ -456,7 +474,9 @@
 		<button id="confirm-hosts-download">Download Hosts</button>
     </div>
 </div>
-
+<div id="notification" class="notification">
+    <p>.</p>
+</div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -473,7 +493,6 @@
             { name: "balenaEtcher", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon_url: "exe/balenaEtcher-1.19.21.Setup.png" },
 			{ name: 'Photoshop 2024', download_url: 'etc/Photoshop%202024.torrent', icon_url: 'etc/Photoshop%202024.png' },
 			{ name: 'Wondershare Filmora', download_url: 'etc/Wondershare Filmora.torrent', icon_url: 'etc/Wondershare Filmora.png' },
-			{ name: 'MAS', download_url: 'https://raw.githubusercontent.com/massgravel/Microsoft-Activation-Scripts/refs/heads/master/MAS/Separate-Files-Version/Activators/Online_KMS_Activation.cmd', icon_url: 'exe/MAS.png' },
         ];
 
         const externalLinks = [
@@ -537,7 +556,6 @@ function closeHostsModal() {
 }
 
 document.getElementById("copy-path").onclick = () => {
-
     const tempInput = document.createElement('input');
     tempInput.value = "C:/Windows/System32/Drivers/etc/";
     document.body.appendChild(tempInput);
@@ -545,14 +563,7 @@ document.getElementById("copy-path").onclick = () => {
     document.execCommand('copy');
     document.body.removeChild(tempInput);
 
-
-    const notification = document.getElementById("notification");
-    notification.classList.remove('hidden');
-    notification.classList.add('show');
-    setTimeout(() => {
-        notification.classList.remove('show');
-        notification.classList.add('hidden');
-    }, 3000);
+    showNotification("Path copied to clipboard!");
 };
 
 
@@ -697,11 +708,12 @@ if (fileName === "Photoshop 2024" || fileName === "Wondershare Filmora") {
 if (fileName === "MAS") {
     const copyCommandButton = document.createElement("button");
     copyCommandButton.className = "button";
-    copyCommandButton.innerText = "Copy command";
+    copyCommandButton.innerText = "CMD (online)";
     copyCommandButton.onclick = (event) => {
         event.stopPropagation();
         const command = 'curl -O https://raw.githubusercontent.com/massgravel/Microsoft-Activation-Scripts/refs/heads/master/MAS/Separate-Files-Version/Activators/Online_KMS_Activation.cmd && Online_KMS_Activation.cmd';
         navigator.clipboard.writeText(command).then(() => {
+            showNotification("Command copied to clipboard!");
         }).catch(err => {
             console.error('Failed to copy command: ', err);
         });
@@ -729,7 +741,6 @@ document.getElementById("cancel-hosts").onclick = () => {
     closeHostsModal();
 };
 
-
 document.getElementById("cancel-hosts").onclick = () => {
     closeHostsModal();
 };
@@ -749,6 +760,19 @@ document.getElementById("cancel-hosts").onclick = () => {
             renderObfuscatorFile();
         })
         .catch(error => console.error('Error fetching files:', error));
+}
+function showNotification(message) {
+    const notification = document.getElementById('notification');
+    notification.querySelector('p').innerHTML = message;
+    notification.style.display = 'block';
+    notification.style.animation = 'fadeIn 0.5s ease-in-out';
+
+    setTimeout(() => {
+        notification.style.animation = 'fadeOut 0.5s ease-in-out';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 500);
+    }, 2300);
 }
 
         function renderObfuscatorFile() {
