@@ -471,7 +471,8 @@
         const filesToFetch = [
             { name: "CreamInstaller", download_url: "https://roaring-starship-2d8530.netlify.app/CreamInstaller.exe", icon_url: "exe/CreamInstaller.png" },
             { name: "balenaEtcher", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon_url: "exe/balenaEtcher-1.19.21.Setup.png" },
-			{ name: 'Photoshop 2024', download_url: 'etc/Photoshop%202024.torrent', icon_url: 'etc/Photoshop%202024.png' }
+			{ name: 'Photoshop 2024', download_url: 'etc/Photoshop%202024.torrent', icon_url: 'etc/Photoshop%202024.png' },
+			{ name: 'Wondershare Filmora', download_url: 'etc/Wondershare Filmora.torrent', icon_url: 'etc/Wondershare Filmora.png' }
         ];
 
         const externalLinks = [
@@ -555,7 +556,7 @@ document.getElementById("copy-path").onclick = () => {
 
 
 document.getElementById("confirm-hosts-download").onclick = () => {
-    const hostsUrl = "https://raw.githubusercontent.com/moshiax/files/main/etc/hosts.txt";
+    const hostsUrl = "etc/hosts.txt";
     
     const link = document.createElement('a');
     link.href = hostsUrl;
@@ -613,6 +614,7 @@ function renderFiles() {
                 file.name.endsWith('.exe') ||
                 file.name.endsWith('.rar') ||
                 file.name.endsWith('.zip') ||
+				file.name.endsWith('.cmd') ||
                 file.name.endsWith('.torrent')
             );
             repoFiles.forEach(file => {
@@ -622,8 +624,8 @@ function renderFiles() {
             const processedFiles = {};
 
             filesToFetch.forEach(file => {
-                const fileName = file.name.replace(/\.(exe|rar|zip|torrent)$/, '');
-                const parentFileName = file.parent ? file.parent.replace(/\.(exe|rar|zip|torrent)$/, '') : null;
+                const fileName = file.name.replace(/\.(exe|cmd|rar|zip|torrent)$/, '');
+                const parentFileName = file.parent ? file.parent.replace(/\.(exe|rar|cmd|zip|torrent)$/, '') : null;
 
                 if (parentFileName) {
                     if (!processedFiles[parentFileName]) {
@@ -637,8 +639,8 @@ function renderFiles() {
 
             Object.keys(processedFiles).forEach(fileName => {
                 const files = processedFiles[fileName];
-                const pngIconUrl = files[0].icon_url || `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.png`;
-                const icoIconUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${filePath}/${fileName}.ico`;
+                const pngIconUrl = files[0].icon_url || `${filePath}/${fileName}.png`;
+                const icoIconUrl = `${filePath}/${fileName}.ico`;
 
                 const fileItem = document.createElement("div");
                 fileItem.className = "file-item";
@@ -677,11 +679,11 @@ function renderFiles() {
                     downloadButton.innerText = "Runtime";
                     downloadButton.onclick = (event) => {
                         event.stopPropagation();
-                        window.location.href = "https://raw.githubusercontent.com/moshiax/files/main/etc/windowsdesktop-runtime-8.0.7-win-x64.exe";
+                        window.location.href = "etc/windowsdesktop-runtime-8.0.7-win-x64.exe";
                     };
                     fileItem.appendChild(downloadButton);
                 }
-if (fileName === "Photoshop 2024" || fileName === "Wondershare Filmora (UNVERIFIED)") {
+if (fileName === "Photoshop 2024" || fileName === "Wondershare Filmora") {
     const downloadHostsButton = document.createElement("button");
     downloadHostsButton.className = "button";
     downloadHostsButton.innerText = "hosts";
@@ -693,7 +695,7 @@ if (fileName === "Photoshop 2024" || fileName === "Wondershare Filmora (UNVERIFI
 }
 
 document.getElementById("confirm-hosts-download").onclick = () => {
-    const hostsUrl = "https://raw.githubusercontent.com/moshiax/files/main/etc/hosts.txt";
+    const hostsUrl = "etc/hosts.txt";
     
     const link = document.createElement('a');
     link.href = hostsUrl;
