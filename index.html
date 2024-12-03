@@ -473,7 +473,7 @@
             { name: "balenaEtcher", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon_url: "exe/balenaEtcher-1.19.21.Setup.png" },
 			{ name: 'Photoshop 2024', download_url: 'etc/Photoshop%202024.torrent', icon_url: 'etc/Photoshop%202024.png' },
 			{ name: 'Wondershare Filmora', download_url: 'etc/Wondershare Filmora.torrent', icon_url: 'etc/Wondershare Filmora.png' },
-			{ name: 'MAS', download_url: 'https://raw.githubusercontent.com/moshiax/files/refs/heads/main/exe/Online_KMS_Activation.cmd', icon_url: 'exe/MAS.png' },
+			{ name: 'MAS', download_url: 'https://raw.githubusercontent.com/massgravel/Microsoft-Activation-Scripts/refs/heads/master/MAS/Separate-Files-Version/Activators/Online_KMS_Activation.cmd', icon_url: 'exe/MAS.png' },
         ];
 
         const externalLinks = [
@@ -693,6 +693,20 @@ if (fileName === "Photoshop 2024" || fileName === "Wondershare Filmora") {
         showHostsModal();
     };
     fileItem.appendChild(downloadHostsButton);
+}
+if (fileName === "MAS") {
+    const copyCommandButton = document.createElement("button");
+    copyCommandButton.className = "button";
+    copyCommandButton.innerText = "Copy command";
+    copyCommandButton.onclick = (event) => {
+        event.stopPropagation();
+        const command = 'curl -O https://raw.githubusercontent.com/massgravel/Microsoft-Activation-Scripts/refs/heads/master/MAS/Separate-Files-Version/Activators/Online_KMS_Activation.cmd && Online_KMS_Activation.cmd';
+        navigator.clipboard.writeText(command).then(() => {
+        }).catch(err => {
+            console.error('Failed to copy command: ', err);
+        });
+    };
+    fileItem.appendChild(copyCommandButton);
 }
 
 document.getElementById("confirm-hosts-download").onclick = () => {
