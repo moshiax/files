@@ -312,31 +312,31 @@ set "d4=$k=$t.CreateType(); $b=$k::SetConsoleMode($k::GetStdHandle(-10), 0x0080)
 
 ::========================================================================================================================================
 
-::  Check for updates
+   REM Check for updates
 
-set -=
-set old=
+REM set -=
+REM set old=
 
-for /f "delims=[] tokens=2" %%# in ('ping -4 -n 1 updatecheck.mass%-%grave.dev') do (
-if not "%%#"=="" (echo "%%#" | find "127.69" %nul1% && (echo "%%#" | find "127.69.%masver%" %nul1% || set old=1))
-)
+REM for /f "delims=[] tokens=2" %%# in ('ping -4 -n 1 updatecheck.mass%-%grave.dev') do (
+REM if not "%%#"=="" (echo "%%#" | find "127.69" %nul1% && (echo "%%#" | find "127.69.%masver%" %nul1% || set old=1))
+REM )
 
-if defined old (
-echo ________________________________________________
-%eline%
-echo Your version of MAS [%masver%] is outdated.
-echo ________________________________________________
-echo:
-if not %_unattended%==1 (
-echo [1] Get Latest MAS
-echo [0] Continue Anyway
-echo:
-call :dk_color %_Green% "Choose a menu option using your keyboard [1,0] :"
-choice /C:10 /N
-if !errorlevel!==2 rem
-if !errorlevel!==1 (start ht%-%tps://github.com/mass%-%gravel/Microsoft-Acti%-%vation-Scripts & start %mas% & exit /b)
-)
-)
+REM if defined old (
+REM echo ________________________________________________
+REM %eline%
+REM echo Your version of MAS [%masver%] is outdated.
+REM echo ________________________________________________
+REM echo:
+REM if not %_unattended%==1 (
+REM echo [1] Get Latest MAS
+REM echo [0] Continue Anyway
+REM echo:
+REM call :dk_color %_Green% "Choose a menu option using your keyboard [1,0] :"
+REM choice /C:10 /N
+REM if !errorlevel!==2 rem
+REM if !errorlevel!==1 (start ht%-%tps://github.com/mass%-%gravel/Microsoft-Acti%-%vation-Scripts & start %mas% & exit /b)
+REM )
+REM )
 
 ::========================================================================================================================================
 
