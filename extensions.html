@@ -6,20 +6,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body {
-            background-color: #0d1117;
-            color: #c9d1d9;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0;
-        }
+body {
+	background-color: #0d1117;
+	color: #c9d1d9;
+	font-family: 'Courier New', Courier, monospace;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+}
 
-        #app {
-            text-align: center;
-            width: 70%;
-        }
+#app {
+	text-align: center;
+	width: 70%;
+}
 .file-item:hover {
     border-color: #58a6ff;
     box-shadow: 0 0 1em rgba(88, 166, 255, 5.5);
@@ -41,107 +41,73 @@
     border-radius: 0.5em; 
 }
 
-
-        #file-list {
-            margin-top: 2em;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-        }
-
-        .file-item {
-            background-color: #161b22;
-            border: 0.1em solid #30363d;
-            border-radius: 0.375em;
-            padding: 1em;
-            margin: 1em;
-            width: calc(50% - 2em);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            box-sizing: border-box;
-        }
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+#file-list {
+	margin-top: 2em;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
 }
 
-@keyframes modalFadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
+.file-item {
+	background-color: #161b22;
+	border: 0.1em solid #30363d;
+	border-radius: 0.375em;
+	padding: 1em;
+	margin: 1em;
+	width: calc(50% - 2em);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	cursor: pointer;
+	box-sizing: border-box;
 }
 
-.modal {
-    display: none;
+.notification {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 20px;
+  background-color: rgba(0,0,0,.8);
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,.5);
+  font-size: 1.5rem;
+  text-align: center;
+  z-index: 10000000;
+  animation: fadeIn .5s ease-in-out,fadeOut .5s ease-in-out 1s
 }
 
-.modal.show {
-    display: flex;
-    animation: modalFadeIn 0.3s forwards;
+@media (max-width: 48em) {
+	.file-item {
+		width: calc(100% - 2em);
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.file-link {
+		flex-grow: 1;
+	}
+
+	.button {
+		margin-top: 1em;
+		width: 100%;
+		text-align: center;
+	}
 }
 
-.modal.hide {
-    animation: modalFadeOut 0.3s forwards;
+.file-item img {
+	width: 3em;
+	height: 3em;
+	margin-right: 1em;
 }
 
-
-        @media (max-width: 48em) {
-            .file-item {
-                width: calc(100% - 2em);
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .file-link {
-                flex-grow: 1;
-            }
-
-            .button {
-                margin-top: 1em;
-                width: 100%;
-                text-align: center;
-            }
-        }
-
-        .file-item img {
-            width: 3em;
-            height: 3em;
-            margin-right: 1em;
-        }
-
-        .file-link {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: white;
-            flex-grow: 1;
-        }
-
-.online-button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 0.1875em;
-    cursor: pointer;
-    margin-left: 1em;
-    padding: 0.5em 1em;
-    font-size: 0.875em;
-    white-space: nowrap;
-    transition: background-color 0.3s, opacity 0.3s;
-}
-
-.online-button:hover {
-    background-color: #218838; 
-    opacity: 0.9; 
+.file-link {
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+	color: white;
+	flex-grow: 1;
 }
 
 #confirm-download {
@@ -166,84 +132,84 @@
     cursor: not-allowed;
 }
 
+.hidden {
+	display: none;
+}
 
-        .hidden {
-            display: none;
-        }
+.expanded-content {
+	margin-top: 1em;
+	text-align: left;
+	overflow: hidden;
+	max-height: 0;
+	transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+	opacity: 0;
+}
 
-        .expanded-content {
-            margin-top: 1em;
-            text-align: left;
-            overflow: hidden;
-            max-height: 0;
-            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-            opacity: 0;
-        }
+.expanded-content.expanded {
+	max-height: 30em;
+	opacity: 1;
+}
 
-        .expanded-content.expanded {
-            max-height: 30em;
-            opacity: 1;
-        }
+.expanded-content a {
+	display: block;
+	color: white;
+	margin-bottom: 0.5em;
+}
 
-        .expanded-content a {
-            display: block;
-            color: white;
-            margin-bottom: 0.5em;
-        }
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgb(0, 0, 0);
+	background-color: rgba(0, 0, 0, 0.8);
+	justify-content: center;
+	align-items: center;
+}
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0, 0, 0);
-            background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-        }
+.modal-content {
+	background-color: #161b22;
+	margin: auto;
+	padding: 1em;
+	border: 1px solid #30363d;
+	width: 80%;
+	max-width: 500px;
+	text-align: center;
+	color: #c9d1d9;
+}
 
-        .modal-content {
-            background-color: #161b22;
-            margin: auto;
-            padding: 1em;
-            border: 1px solid #30363d;
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-            color: #c9d1d9;
-        }
+.modal-content h2 {
+	color: #ff4d4d;
+}
 
-        .modal-content h2 {
-            color: #ff4d4d;
-        }
+.modal-content input {
+	margin-top: 1em;
+	padding: 0.5em;
+	width: 80%;
+}
 
-        .modal-content input {
-            margin-top: 1em;
-            padding: 0.5em;
-            width: 80%;
-        }
+.modal-content button {
+	background-color: #28a745;
+	color: white;
+	border: none;
+	border-radius: 0.1875em;
+	cursor: pointer;
+	padding: 0.5em 1em;
+	font-size: 0.875em;
+	white-space: nowrap;
+	margin-top: 1em;
+	transition: background-color 0.3s;
+}
 
-        .modal-content button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 0.1875em;
-            cursor: pointer;
-            padding: 0.5em 1em;
-            font-size: 0.875em;
-            white-space: nowrap;
-            margin-top: 1em;
-            transition: background-color 0.3s;
-        }
+.modal-content button:disabled {
+	background-color: #555;
+	cursor: not-allowed;
+}
 
-        .modal-content button:disabled {
-            background-color: #555;
-            cursor: not-allowed;
-        }
 .file-item:hover {
     border-color: var(--hover-color);
     box-shadow: 0 0 1em var(--hover-color);
@@ -282,13 +248,35 @@
     display: none;
 }
 
-#hosts-modal.show {
+.modal.show, #hosts-modal.show {
     display: flex;
-    animation: modalFadeIn 0.3s forwards;
+    animation: FadeIn 0.3s forwards;
 }
 
-#hosts-modal.hide {
-    animation: modalFadeOut 0.3s forwards;
+.modal.hide, #hosts-modal.hide {
+    animation: FadeOut 0.3s forwards;
+}
+
+@keyframes FadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes FadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 }
 
 #hosts-modal .modal-content {
@@ -333,26 +321,50 @@
 }
 
 .notification {
+    display: none;
     position: fixed;
     bottom: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    background-color: #333;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 20px;
+    background-color: rgba(0, 0, 0, .8);
     color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    font-family: Arial, sans-serif;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.5s ease;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, .5);
+    font-size: 1.5rem;
+    text-align: center;
+    z-index: 10000000;
+    animation: fadeIn 0.5s ease-in-out, fadeOut 0.5s ease-in-out 2s;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+
 .notification.show {
+    display: block;
     opacity: 1;
 }
+
 .notification.hidden {
     display: none;
 }
+
 .modal-container {
     display: none; 
     position: fixed;
@@ -366,7 +378,7 @@
 }
 
 .modal-content {
-    background-color: #00000;
+    background-color: #000000;
     padding: 20px;
     border-radius: 5px;
     position: relative;
@@ -379,6 +391,7 @@
 .modal-container.hide {
     display: none;
 }
+
 .button-container {
     position: fixed;
     top: 0;
@@ -413,6 +426,23 @@
     opacity: 0.9;
 }
 
+.online-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 0.1875em;
+    cursor: pointer;
+    margin-left: 1em;
+    padding: 0.5em 1em;
+    font-size: 0.875em;
+    white-space: nowrap;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+.online-button:hover {
+    background-color: #218838; 
+    opacity: 0.9; 
+}
 
     </style>
 </head>

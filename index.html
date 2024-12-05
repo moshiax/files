@@ -6,20 +6,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body {
-            background-color: #0d1117;
-            color: #c9d1d9;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0;
-        }
+body {
+	background-color: #0d1117;
+	color: #c9d1d9;
+	font-family: 'Courier New', Courier, monospace;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+}
 
-        #app {
-            text-align: center;
-            width: 70%;
-        }
+#app {
+	text-align: center;
+	width: 70%;
+}
 .file-item:hover {
     border-color: #58a6ff;
     box-shadow: 0 0 1em rgba(88, 166, 255, 5.5);
@@ -41,56 +41,25 @@
     border-radius: 0.5em; 
 }
 
-
-        #file-list {
-            margin-top: 2em;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-        }
-
-        .file-item {
-            background-color: #161b22;
-            border: 0.1em solid #30363d;
-            border-radius: 0.375em;
-            padding: 1em;
-            margin: 1em;
-            width: calc(50% - 2em);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            box-sizing: border-box;
-        }
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+#file-list {
+	margin-top: 2em;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
 }
 
-@keyframes modalFadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
-}
-
-.modal {
-    display: none;
-}
-
-.modal.show {
-    display: flex;
-    animation: modalFadeIn 0.3s forwards;
-}
-
-.modal.hide {
-    animation: modalFadeOut 0.3s forwards;
+.file-item {
+	background-color: #161b22;
+	border: 0.1em solid #30363d;
+	border-radius: 0.375em;
+	padding: 1em;
+	margin: 1em;
+	width: calc(50% - 2em);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	cursor: pointer;
+	box-sizing: border-box;
 }
 
 .notification {
@@ -109,56 +78,36 @@
   animation: fadeIn .5s ease-in-out,fadeOut .5s ease-in-out 1s
 }
 
+@media (max-width: 48em) {
+	.file-item {
+		width: calc(100% - 2em);
+		flex-direction: column;
+		align-items: flex-start;
+	}
 
+	.file-link {
+		flex-grow: 1;
+	}
 
-        @media (max-width: 48em) {
-            .file-item {
-                width: calc(100% - 2em);
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .file-link {
-                flex-grow: 1;
-            }
-
-            .button {
-                margin-top: 1em;
-                width: 100%;
-                text-align: center;
-            }
-        }
-
-        .file-item img {
-            width: 3em;
-            height: 3em;
-            margin-right: 1em;
-        }
-
-        .file-link {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: white;
-            flex-grow: 1;
-        }
-
-.button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 0.1875em;
-    cursor: pointer;
-    margin-left: 1em;
-    padding: 0.5em 1em;
-    font-size: 0.875em;
-    white-space: nowrap;
-    transition: background-color 0.3s, opacity 0.3s;
+	.button {
+		margin-top: 1em;
+		width: 100%;
+		text-align: center;
+	}
 }
 
-.button:hover {
-    background-color: #218838; 
-    opacity: 0.9; 
+.file-item img {
+	width: 3em;
+	height: 3em;
+	margin-right: 1em;
+}
+
+.file-link {
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+	color: white;
+	flex-grow: 1;
 }
 
 #confirm-download {
@@ -183,84 +132,84 @@
     cursor: not-allowed;
 }
 
+.hidden {
+	display: none;
+}
 
-        .hidden {
-            display: none;
-        }
+.expanded-content {
+	margin-top: 1em;
+	text-align: left;
+	overflow: hidden;
+	max-height: 0;
+	transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+	opacity: 0;
+}
 
-        .expanded-content {
-            margin-top: 1em;
-            text-align: left;
-            overflow: hidden;
-            max-height: 0;
-            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-            opacity: 0;
-        }
+.expanded-content.expanded {
+	max-height: 30em;
+	opacity: 1;
+}
 
-        .expanded-content.expanded {
-            max-height: 30em;
-            opacity: 1;
-        }
+.expanded-content a {
+	display: block;
+	color: white;
+	margin-bottom: 0.5em;
+}
 
-        .expanded-content a {
-            display: block;
-            color: white;
-            margin-bottom: 0.5em;
-        }
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgb(0, 0, 0);
+	background-color: rgba(0, 0, 0, 0.8);
+	justify-content: center;
+	align-items: center;
+}
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0, 0, 0);
-            background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-        }
+.modal-content {
+	background-color: #161b22;
+	margin: auto;
+	padding: 1em;
+	border: 1px solid #30363d;
+	width: 80%;
+	max-width: 500px;
+	text-align: center;
+	color: #c9d1d9;
+}
 
-        .modal-content {
-            background-color: #161b22;
-            margin: auto;
-            padding: 1em;
-            border: 1px solid #30363d;
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-            color: #c9d1d9;
-        }
+.modal-content h2 {
+	color: #ff4d4d;
+}
 
-        .modal-content h2 {
-            color: #ff4d4d;
-        }
+.modal-content input {
+	margin-top: 1em;
+	padding: 0.5em;
+	width: 80%;
+}
 
-        .modal-content input {
-            margin-top: 1em;
-            padding: 0.5em;
-            width: 80%;
-        }
+.modal-content button {
+	background-color: #28a745;
+	color: white;
+	border: none;
+	border-radius: 0.1875em;
+	cursor: pointer;
+	padding: 0.5em 1em;
+	font-size: 0.875em;
+	white-space: nowrap;
+	margin-top: 1em;
+	transition: background-color 0.3s;
+}
 
-        .modal-content button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 0.1875em;
-            cursor: pointer;
-            padding: 0.5em 1em;
-            font-size: 0.875em;
-            white-space: nowrap;
-            margin-top: 1em;
-            transition: background-color 0.3s;
-        }
+.modal-content button:disabled {
+	background-color: #555;
+	cursor: not-allowed;
+}
 
-        .modal-content button:disabled {
-            background-color: #555;
-            cursor: not-allowed;
-        }
 .file-item:hover {
     border-color: var(--hover-color);
     box-shadow: 0 0 1em var(--hover-color);
@@ -299,13 +248,35 @@
     display: none;
 }
 
-#hosts-modal.show {
+.modal.show, #hosts-modal.show {
     display: flex;
-    animation: modalFadeIn 0.3s forwards;
+    animation: FadeIn 0.3s forwards;
 }
 
-#hosts-modal.hide {
-    animation: modalFadeOut 0.3s forwards;
+.modal.hide, #hosts-modal.hide {
+    animation: FadeOut 0.3s forwards;
+}
+
+@keyframes FadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes FadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 }
 
 #hosts-modal .modal-content {
@@ -348,47 +319,48 @@
     background-color: #555;
     cursor: not-allowed;
 }
+
+.notification {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 20px;
+    background-color: rgba(0, 0, 0, .8);
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, .5);
+    font-size: 1.5rem;
+    text-align: center;
+    z-index: 10000000;
+    animation: fadeIn 0.5s ease-in-out, fadeOut 0.5s ease-in-out 2s;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(20px)
   }
   to {
     opacity: 1;
-    transform: translateX(-50%) translateY(0)
   }
 }
+
 @keyframes fadeOut {
   from {
     opacity: 1;
-    transform: translateX(-50%) translateY(0)
   }
   to {
     opacity: 0;
-    transform: translateX(-50%) translateY(20px)
   }
-}
-.notification {
-  display: none;
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 20px;
-  background-color: rgba(0,0,0,.8);
-  color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0,0,0,.5);
-  font-size: 1.5rem;
-  text-align: center;
-  z-index: 10000000;
-  animation: fadeIn .5s ease-in-out,fadeOut .5s ease-in-out 1s
 }
 
 
 .notification.show {
+    display: block;
     opacity: 1;
 }
+
 .notification.hidden {
     display: none;
 }
@@ -406,7 +378,7 @@
 }
 
 .modal-content {
-    background-color: #00000;
+    background-color: #000000;
     padding: 20px;
     border-radius: 5px;
     position: relative;
@@ -419,6 +391,7 @@
 .modal-container.hide {
     display: none;
 }
+
 .button-container {
     position: fixed;
     top: 0;
@@ -454,10 +427,11 @@
 }
 
 
+
     </style>
 </head>
 <div id="notification" class="notification">
-    <p>NieR:Automata is not available in your country in Steam. Switched to the USA.</p>
+    <p></p>
 </div>
 
 <body>
@@ -501,22 +475,8 @@
 
 
 <script>
-
 function showNotification(message) {
-
-    let formattedMessage = message.replace(/\n/g, '<br>').replace(/\[(H|P|N|Q)\]/g, match => 
-        `<span class="notification-key" data-key="${match}">${match}</span>`
-    );
-
-    const discountPercentMatch = message.match(/Discount percent is (\d+)%/);
-    if (discountPercentMatch) {
-        const discountPercent = discountPercentMatch[1];
-        formattedMessage = formattedMessage.replace(
-            `Discount percent is ${discountPercent}%`, 
-            `<span class="discount-highlight">Discount percent is <b>${discountPercent}%</b></span>`
-        );
-    }
-
+    let formattedMessage = message
     const notification = document.getElementById('notification');
     notification.querySelector('p').innerHTML = formattedMessage;
     notification.style.display = 'block';
@@ -530,47 +490,63 @@ function showNotification(message) {
     }, 2300);
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+    const repoOwner = "moshiax";
+    const repoName = "files";
+    const filePath = "exe";
+    const fileListElement = document.getElementById("file-list");
+    const modal = document.getElementById("modal");
+    const confirmationInput = document.getElementById("confirmation-input");
+    const confirmDownloadButton = document.getElementById("confirm-download");
 
-    document.addEventListener("DOMContentLoaded", function() {
-        const repoOwner = "moshiax";
-        const repoName = "files";
-        const filePath = "exe";
-        const fileListElement = document.getElementById("file-list");
-        const modal = document.getElementById("modal");
-        const confirmationInput = document.getElementById("confirmation-input");
-        const confirmDownloadButton = document.getElementById("confirm-download");
-
-        const filesToFetch = [
-            { name: "CreamInstaller", download_url: "https://roaring-starship-2d8530.netlify.app/CreamInstaller.exe", icon_url: "exe/CreamInstaller.png" },
-            { name: "balenaEtcher", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon_url: "exe/balenaEtcher-1.19.21.Setup.png" },
-			{ name: 'Photoshop 2024', download_url: 'etc/Photoshop%202024.torrent', icon_url: 'etc/Photoshop%202024.png' },
-			{ name: 'Wondershare Filmora', download_url: 'etc/Wondershare Filmora.torrent', icon_url: 'etc/Wondershare Filmora.png' },
-        ];
-
-        const externalLinks = [
-        ];
-
-        function renderExternalLinks() {
-            externalLinks.forEach(link => {
-                const linkItem = document.createElement("div");
-                linkItem.className = "file-item";
-
-                const linkIcon = document.createElement("img");
-                linkIcon.src = link.icon_url;
-                const linkAnchor = document.createElement("a");
-                linkAnchor.href = link.url;
-                linkAnchor.target = "_blank";
-                linkAnchor.className = "file-link";
-                linkAnchor.innerText = link.name;
-
-                linkAnchor.prepend(linkIcon);
-
-                linkItem.appendChild(linkAnchor);
-                fileListElement.appendChild(linkItem);
-            });
-
-            renderTihiyDomItem();
+    const filesToFetch = [
+        { 
+            name: "CreamInstaller", 
+            download_url: "https://roaring-starship-2d8530.netlify.app/CreamInstaller.exe", 
+            icon_url: "exe/CreamInstaller.png" 
+        },
+        { 
+            name: "balenaEtcher", 
+            download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", 
+            icon_url: "exe/balenaEtcher-1.19.21.Setup.png" 
+        },
+        { 
+            name: 'Photoshop 2024', 
+            download_url: 'etc/Photoshop%202024.torrent', 
+            icon_url: 'etc/Photoshop%202024.png' 
+        },
+        { 
+            name: 'Wondershare Filmora', 
+            download_url: 'etc/Wondershare Filmora.torrent', 
+            icon_url: 'etc/Wondershare Filmora.png' 
         }
+    ];
+
+    const externalLinks = [];
+
+    function renderExternalLinks() {
+        externalLinks.forEach(link => {
+            const linkItem = document.createElement("div");
+            linkItem.className = "file-item";
+
+            const linkIcon = document.createElement("img");
+            linkIcon.src = link.icon_url;
+
+            const linkAnchor = document.createElement("a");
+            linkAnchor.href = link.url;
+            linkAnchor.target = "_blank";
+            linkAnchor.className = "file-link";
+            linkAnchor.innerText = link.name;
+
+            linkAnchor.prepend(linkIcon);
+            linkItem.appendChild(linkAnchor);
+            fileListElement.appendChild(linkItem);
+        });
+
+        renderTihiyDomItem();
+    }
+
+		
 function setHoverColor(fileItem, color) {
     const threshold = 50;
     const [r, g, b] = color;
@@ -668,9 +644,7 @@ function setIconColorAndHover(fileItem, iconElement, colors) {
     applyColor();
 }
 
-
 function renderFiles() {
-
     fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`)
         .then(response => response.json())
         .then(data => {
@@ -679,9 +653,10 @@ function renderFiles() {
                 file.name.endsWith('.rar') ||
                 file.name.endsWith('.msi') ||
                 file.name.endsWith('.zip') ||
-				file.name.endsWith('.cmd') ||
+                file.name.endsWith('.cmd') ||
                 file.name.endsWith('.torrent')
             );
+
             repoFiles.forEach(file => {
                 filesToFetch.push({ name: file.name, download_url: file.download_url });
             });
@@ -712,18 +687,22 @@ function renderFiles() {
 
                 const fileIcon = document.createElement("img");
                 fileIcon.src = pngIconUrl;
+
                 fileIcon.onload = () => {
                     getDominantColor(pngIconUrl, (colors) => {
                         setIconColorAndHover(fileItem, fileIcon, colors);
                     });
                 };
+
                 fileIcon.onerror = () => {
                     fileIcon.src = icoIconUrl;
+
                     fileIcon.onload = () => {
                         getDominantColor(icoIconUrl, (colors) => {
                             setIconColorAndHover(fileItem, fileIcon, colors);
                         });
                     };
+
                     fileIcon.onerror = () => {
                         console.error(`Neither PNG nor ICO icons were found for ${fileName}`);
                     };
@@ -737,6 +716,7 @@ function renderFiles() {
 
                 fileItem.appendChild(fileIcon);
                 fileItem.appendChild(fileLink);
+
                 if (fileName === "Flameshot") {
                     const downloadButton = document.createElement("button");
                     downloadButton.className = "button";
@@ -747,6 +727,7 @@ function renderFiles() {
                     };
                     fileItem.appendChild(downloadButton);
                 }
+
                 if (fileName === "CreamInstaller") {
                     const downloadButton = document.createElement("button");
                     downloadButton.className = "button";
@@ -757,60 +738,50 @@ function renderFiles() {
                     };
                     fileItem.appendChild(downloadButton);
                 }
-if (fileName === "Photoshop 2024" || fileName === "Wondershare Filmora") {
-    const downloadHostsButton = document.createElement("button");
-    downloadHostsButton.className = "button";
-    downloadHostsButton.innerText = "hosts";
-    downloadHostsButton.onclick = (event) => {
-        event.stopPropagation();
-        showHostsModal();
-    };
-    fileItem.appendChild(downloadHostsButton);
-}
-if (fileName === "MAS") {
-    const copyCommandButton = document.createElement("button");
-    copyCommandButton.className = "button";
-    copyCommandButton.innerText = "CMD (online)";
-    copyCommandButton.onclick = (event) => {
-        event.stopPropagation();
-        const command = 'curl -O https://raw.githubusercontent.com/massgravel/Microsoft-Activation-Scripts/refs/heads/master/MAS/Separate-Files-Version/Activators/Online_KMS_Activation.cmd && Online_KMS_Activation.cmd';
-        navigator.clipboard.writeText(command).then(() => {
-            showNotification("Command copied to clipboard!");
-        }).catch(err => {
-            console.error('Failed to copy command: ', err);
-        });
-    };
-    fileItem.appendChild(copyCommandButton);
-}
 
-document.getElementById("confirm-hosts-download").onclick = () => {
-    const hostsUrl = "etc/hosts.txt";
-    
-    const link = document.createElement('a');
-    link.href = hostsUrl;
-    link.target = '_blank'; 
+                if (fileName === "Photoshop 2024" || fileName === "Wondershare Filmora") {
+                    const downloadHostsButton = document.createElement("button");
+                    downloadHostsButton.className = "button";
+                    downloadHostsButton.innerText = "hosts";
+                    downloadHostsButton.onclick = (event) => {
+                        event.stopPropagation();
+                        showHostsModal();
+                    };
+                    fileItem.appendChild(downloadHostsButton);
+                }
 
-    document.body.appendChild(link);
+                if (fileName === "MAS") {
+                    const copyCommandButton = document.createElement("button");
+                    copyCommandButton.className = "button";
+                    copyCommandButton.innerText = "CMD (online)";
+                    copyCommandButton.onclick = (event) => {
+                        event.stopPropagation();
+                        const command = 'curl -O https://raw.githubusercontent.com/massgravel/Microsoft-Activation-Scripts/refs/heads/master/MAS/Separate-Files-Version/Activators/Online_KMS_Activation.cmd && Online_KMS_Activation.cmd';
+                        navigator.clipboard.writeText(command).then(() => {
+                            showNotification("Command copied to clipboard!");
+                        }).catch(err => {
+                            console.error('Failed to copy command: ', err);
+                        });
+                    };
+                    fileItem.appendChild(copyCommandButton);
+                }
 
-    link.click();
-    
-    document.body.removeChild(link);
+                document.getElementById("confirm-hosts-download").onclick = () => {
+                    const hostsUrl = "etc/hosts.txt";
+                    const link = document.createElement('a');
+                    link.href = hostsUrl;
+                    link.target = '_blank';
 
-    closeHostsModal();
-};
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
 
-document.getElementById("cancel-hosts").onclick = () => {
-    closeHostsModal();
-};
+                    closeHostsModal();
+                };
 
-document.getElementById("cancel-hosts").onclick = () => {
-    closeHostsModal();
-};
-
-
-
-
-
+                document.getElementById("cancel-hosts").onclick = () => {
+                    closeHostsModal();
+                };
 
                 fileItem.addEventListener('click', () => {
                     window.location.href = files[0].download_url;
@@ -823,74 +794,77 @@ document.getElementById("cancel-hosts").onclick = () => {
         })
         .catch(error => console.error('Error fetching files:', error));
 }
-        function renderObfuscatorFile() {
-            const obfuscatorFile = {
-                name: "obfuscator.exe",
-                download_url: "etc/obfuscator.exe"
-            };
 
-            const fileItem = document.createElement("div");
-            fileItem.className = "file-item";
+function renderObfuscatorFile() {
+    const obfuscatorFile = {
+        name: "obfuscator.exe",
+        download_url: "etc/obfuscator.exe"
+    };
 
-            const fileIcon = document.createElement("img");
-            fileIcon.src = "exe/obfuscator.png";
-            fileIcon.onerror = () => {
-                fileIcon.src = "exe/obfuscator.ico";
-                fileIcon.onerror = () => {
-                    console.error(`Neither PNG nor ICO icons were found for obfuscator.exe`);
-                };
-            };
+    const fileItem = document.createElement("div");
+    fileItem.className = "file-item";
 
-            const fileLink = document.createElement("a");
-            fileLink.className = "file-link";
-            fileLink.innerText = obfuscatorFile.name;
+    const fileIcon = document.createElement("img");
+    fileIcon.src = "exe/obfuscator.png";
 
-            fileItem.appendChild(fileIcon);
-            fileItem.appendChild(fileLink);
+    fileIcon.onerror = () => {
+        fileIcon.src = "exe/obfuscator.ico";
+        fileIcon.onerror = () => {
+            console.error(`Neither PNG nor ICO icons were found for obfuscator.exe`);
+        };
+    };
 
-            fileItem.addEventListener('click', (event) => {
-                event.preventDefault();
-                showModal();
-            });
+    const fileLink = document.createElement("a");
+    fileLink.className = "file-link";
+    fileLink.innerText = obfuscatorFile.name;
 
-            confirmDownloadButton.onclick = () => {
-                window.location.href = obfuscatorFile.download_url;
-                closeModal();
-            };
+    fileItem.appendChild(fileIcon);
+    fileItem.appendChild(fileLink);
 
-            fileListElement.appendChild(fileItem);
-        }
+    fileItem.addEventListener('click', (event) => {
+        event.preventDefault();
+        showModal();
+    });
 
-        function renderTihiyDomItem() {
-            const tihiyDomItem = document.createElement("div");
-            tihiyDomItem.className = "file-item";
-            tihiyDomItem.id = "tihiy-dom-item";
+    confirmDownloadButton.onclick = () => {
+        window.location.href = obfuscatorFile.download_url;
+        closeModal();
+    };
 
-            const tihiyDomIcon = document.createElement("img");
-            tihiyDomIcon.src = "https://tihiyd0m.netlify.app/vector-icons/favicon.4c70c2b.ico";
-            const tihiyDomLink = document.createElement("div");
-            tihiyDomLink.className = "file-link";
-            tihiyDomLink.innerText = "Тихий Дом";
+    fileListElement.appendChild(fileItem);
+}
 
-            const tihiyDomContent = document.createElement("div");
-            tihiyDomContent.className = "expanded-content hidden";
-            tihiyDomContent.innerHTML = `
-                <a href="http://tihiydom.online" target="_blank" onclick="event.stopPropagation()">http://tihiydom.online</a>
-                <a href="https://tihiydom.netlify.app" target="_blank" onclick="event.stopPropagation()">https://tihiydom.netlify.app</a>
-                <a href="https://tihiyd0m.netlify.app" target="_blank" onclick="event.stopPropagation()">https://tihiyd0m.netlify.app</a>
-            `;
+function renderTihiyDomItem() {
+    const tihiyDomItem = document.createElement("div");
+    tihiyDomItem.className = "file-item";
+    tihiyDomItem.id = "tihiy-dom-item";
 
-            tihiyDomItem.appendChild(tihiyDomIcon);
-            tihiyDomItem.appendChild(tihiyDomLink);
-            tihiyDomItem.appendChild(tihiyDomContent);
+    const tihiyDomIcon = document.createElement("img");
+    tihiyDomIcon.src = "https://tihiyd0m.netlify.app/vector-icons/favicon.4c70c2b.ico";
 
-            tihiyDomItem.addEventListener('click', () => {
-                tihiyDomContent.classList.toggle("hidden");
-                tihiyDomContent.classList.toggle("expanded");
-            });
+    const tihiyDomLink = document.createElement("div");
+    tihiyDomLink.className = "file-link";
+    tihiyDomLink.innerText = "Тихий Дом";
 
-            fileListElement.prepend(tihiyDomItem);
-        }
+    const tihiyDomContent = document.createElement("div");
+    tihiyDomContent.className = "expanded-content hidden";
+    tihiyDomContent.innerHTML = `
+        <a href="http://tihiydom.online" target="_blank" onclick="event.stopPropagation()">http://tihiydom.online</a>
+        <a href="https://tihiydom.netlify.app" target="_blank" onclick="event.stopPropagation()">https://tihiydom.netlify.app</a>
+        <a href="https://tihiyd0m.netlify.app" target="_blank" onclick="event.stopPropagation()">https://tihiyd0m.netlify.app</a>
+    `;
+
+    tihiyDomItem.appendChild(tihiyDomIcon);
+    tihiyDomItem.appendChild(tihiyDomLink);
+    tihiyDomItem.appendChild(tihiyDomContent);
+
+    tihiyDomItem.addEventListener('click', () => {
+        tihiyDomContent.classList.toggle("hidden");
+        tihiyDomContent.classList.toggle("expanded");
+    });
+
+    fileListElement.prepend(tihiyDomItem);
+}
 
 function closeModal() {
     modal.classList.add("hide");
@@ -899,11 +873,9 @@ function closeModal() {
         modal.style.display = "none";
         confirmationInput.value = ""; 
         confirmDownloadButton.disabled = true;
-
         document.querySelector('.modal-content').classList.remove('alert');
     }, 300);
 }
-
 
 confirmDownloadButton.onclick = () => {
     window.location.href = obfuscatorFile.download_url;
@@ -914,36 +886,23 @@ function showModal() {
     modal.style.display = "flex";
     modal.classList.add("show");
     modal.classList.remove("hide");
-
     document.querySelector('.modal-content').classList.add('alert');
 }
 
-
-
 window.addEventListener("click", (event) => {
-    if (event.target === modal) {
+    if (event.target === modal || event.target === confirmationInput) {
         closeModal();
     }
 });
 
+confirmationInput.addEventListener('input', () => {
+    confirmDownloadButton.disabled = confirmationInput.value !== "obfuscator.exe";
+});
 
-        confirmationInput.addEventListener('input', () => {
-            if (confirmationInput.value === "obfuscator.exe") {
-                confirmDownloadButton.disabled = false;
-            } else {
-                confirmDownloadButton.disabled = true;
-            }
-        });
+renderExternalLinks();
+renderFiles();
 
-        window.addEventListener("click", (event) => {
-            if (event.target === modal) {
-                closeModal();
-            }
-        });
-
-        renderExternalLinks();
-        renderFiles();
-    });
+});
 </script>
 
 </body>
