@@ -210,10 +210,6 @@ body {
 	cursor: not-allowed;
 }
 
-.file-item:hover {
-    border-color: var(--hover-color);
-    box-shadow: 0 0 1em var(--hover-color);
-}
 .button {
     background-color: #28a745;
     color: white;
@@ -238,10 +234,6 @@ body {
 
 .button.pulse {
     animation: pulse 2s infinite;
-}
-
-.modal-content h2 {
-    color: #ff4d4d;
 }
 
 #hosts-modal {
@@ -320,22 +312,6 @@ body {
     cursor: not-allowed;
 }
 
-.notification {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 20px;
-    background-color: rgba(0, 0, 0, .8);
-    color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, .5);
-    font-size: 1.5rem;
-    text-align: center;
-    z-index: 10000000;
-    animation: fadeIn 0.5s ease-in-out, fadeOut 0.5s ease-in-out 2s;
-}
 
 @keyframes fadeIn {
   from {
@@ -375,13 +351,6 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
-}
-
-.modal-content {
-    background-color: #000000;
-    padding: 20px;
-    border-radius: 5px;
-    position: relative;
 }
 
 .modal-container.show {
