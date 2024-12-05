@@ -82,10 +82,12 @@ button:hover {
 .status {
   margin-top: 10px;
   padding: 10px;
+  display: none;
+  opacity: 1;
+  transition: opacity 1.5s ease-out;
   border-radius: 5px;
   text-align: center;
   font-weight: bold;
-  display: none;
 }
 .status.success {
   background-color: rgba(40, 167, 69, 0.2);
@@ -233,6 +235,8 @@ input[type="range"] {
   flex: 1;
   overflow-y: auto;
   background-color: #161b22;
+  scrollbar-width: thin;
+  scrollbar-color: #58a6ff #161b22;
   padding: 10px;
   border-radius: 5px;
 }
@@ -262,19 +266,12 @@ input[type="range"]::-moz-range-thumb:hover {
   background: #1f6feb;
   transform: scale(1.1);
 }
-.slider-container label {
-  margin-right: 10px;
-}
 .slider-container span {
   margin-left: 10px;
   font-weight: bold;
   color: #58a6ff;
 }
-.status {
-  display: none;
-  opacity: 1;
-  transition: opacity 1.5s ease-out;
-}
+
 
 .status.fade-out {
   opacity: 0;
@@ -298,11 +295,6 @@ input[type="range"]::-moz-range-thumb:hover {
 #terminal-output::-webkit-scrollbar-track {
   background-color: #161b22;
   border-radius: 10px;
-}
-
-#terminal-output {
-  scrollbar-width: thin;
-  scrollbar-color: #58a6ff #161b22;
 }
 
 

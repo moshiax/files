@@ -88,6 +88,8 @@ button:hover,
   text-align: center;
   font-weight: bold;
   display: none;
+  opacity: 1;
+  transition: opacity 1.5s ease-out;
 }
 .status.success {
   background-color: rgba(40, 167, 69, 0.2);
@@ -145,15 +147,13 @@ button:hover,
 #terminal-output {
   flex: 1;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #58a6ff #161b22;
   background-color: #161b22;
   padding: 10px;
   border-radius: 5px;
 }
-.status {
-  display: none;
-  opacity: 1;
-  transition: opacity 1.5s ease-out;
-}
+
 .status.fade-out {
   opacity: 0;
 }
@@ -172,10 +172,6 @@ button:hover,
 #terminal-output::-webkit-scrollbar-track {
   background-color: #161b22;
   border-radius: 10px;
-}
-#terminal-output {
-  scrollbar-width: thin;
-  scrollbar-color: #58a6ff #161b22;
 }
 
 </style>
