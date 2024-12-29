@@ -519,30 +519,22 @@
             const additionalMessage = message.message ? `: ${message.message}` : '';
             newMessage.innerHTML = `${messagePrefix} ${message.first_name || 'Unknown'} (${usernameLink}) ID: ${message.id}${additionalMessage}`;
           } else {
-            if (message.chat) {
-              const chatId = message.chat.id;
-              const chatTitle = message.chat.title || message.chat.username || 'Unknown';
-              try {
-                chatLink = await getChatLink(token, chatId);
-              } catch (error) {
-                console.error('Error getting chat link:', error);
-                try {
-                  chatLink = await getInviteLink(token, chatId);
-                } catch (error) {
-                  console.error('Error getting invite link:', error);
-                  try {
-                    chatLink = await createInviteLink(token, chatId);
-                  } catch (error) {
-                    console.error('Error creating invite link:', error);
-                    chatLink = '';
-                  }
-                }
-              }
-              chatInfo = chatLink ? `  
-          
-												<a href="${chatLink}" style="color: #58a6ff; text-decoration: none;" target="_blank">${chatTitle}</a> (ID: ${chatId})` : `Chat: ${chatTitle} (ID: ${chatId})`;
-            }
-            const botUsername = await getBotUsername(token);
+			if (message.chat) {
+			  const chatId = message.chat.id;
+			  const chatTitle = message.chat.title || message.chat.username || 'Unknown';
+			  try {
+				chatLink = await getChatLink(token, chatId);
+			  } catch (error) {
+				console.error('Error getting chat link:', error);
+				chatLink = '';
+			  }
+			  chatInfo = chatLink ? `
+				<a href="${chatLink}" style="color: #58a6ff; text-decoration: none;" target="_blank">${chatTitle}</a> (ID: ${chatId})` : `Chat: ${chatTitle} (ID: ${chatId})`;
+			}
+
+			const response = await fetch(`https://api.telegram.org/bot${token}/getMe`);
+			const data = await response.json();
+			const botUsername = data.ok && data.result.username ? data.result.username : 'Unknown';
             userLink.href = `tg://resolve?domain=${botUsername}`;
             userLink.textContent = `@${botUsername}`;
             userLink.style.color = '#58a6ff';
@@ -650,45 +642,6 @@
           newMessage.textContent = 'Error processing message';
           terminalOutput.appendChild(newMessage);
           terminalOutput.scrollTop = terminalOutput.scrollHeight;
-        }
-      }
-      async function getChatLink(token, chatId) {
-        try {
-          const response = await fetch(`https://api.telegram.org/bot${token}/getChat?chat_id=${chatId}`);
-          const data = await response.json();
-          if (data.ok && data.result.username) {
-            return `https://t.me/${data.result.username}`;
-          } else {
-            throw new Error('Public link not found');
-          }
-        } catch (error) {
-          throw error;
-        }
-      }
-      async function getInviteLink(token, chatId) {
-        try {
-          const response = await fetch(`https://api.telegram.org/bot${token}/exportChatInviteLink?chat_id=${chatId}`);
-          const data = await response.json();
-          if (data.ok && data.result) {
-            return data.result;
-          } else {
-            throw new Error('Invite link not found');
-          }
-        } catch (error) {
-          throw error;
-        }
-      }
-      async function getBotUsername(token) {
-        try {
-          const response = await fetch(`https://api.telegram.org/bot${token}/getMe`);
-          const data = await response.json();
-          if (data.ok && data.result.username) {
-            return data.result.username;
-          } else {
-            throw new Error('Bot username not found');
-          }
-        } catch (error) {
-          throw error;
         }
       }
 
@@ -813,7 +766,6 @@
         const terminalOutput = document.getElementById('terminal-output');
         const newMessage = document.createElement('div');
         newMessage.style.marginBottom = '10px';
-        // Добавляем анимацию появления
         newMessage.classList.add('message-fade-in');
         try {
           const userLink = document.createElement('a');
