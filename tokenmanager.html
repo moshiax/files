@@ -904,7 +904,9 @@
         terminalOutput.appendChild(newMessage);
         terminalOutput.scrollTop = terminalOutput.scrollHeight;
       }
+	 	 
       const linkCache = {};
+	 
       async function getChatLink(token, chatId) {
         if (linkCache[chatId]?.link) {
           console.log(`Link for chatId ${chatId} found in cache: ${linkCache[chatId].link}`);
@@ -994,15 +996,6 @@
           clearInterval(spamInterval);
           spamInterval = setInterval(sendTelegramMessage, spamDelay);
         }
-      }
-
-      function updateSpamIndicator(isSuccess) {
-        const spamIndicator = document.getElementById('telegram-spam-indicator');
-        spamIndicator.style.backgroundColor = isSuccess ? '#28a745' : '#dc3545';
-        spamIndicator.style.transform = isSuccess ? 'scale(1.2)' : 'scale(0.8)';
-        setTimeout(() => {
-          spamIndicator.style.transform = 'scale(1)';
-        }, 300);
       }
     </script>
   </body>
