@@ -726,7 +726,7 @@ function renderFiles() {
                     copyCommandButton.innerText = "CMD (online)";
                     copyCommandButton.onclick = (event) => {
                         event.stopPropagation();
-                        const command = 'curl -O https://raw.githubusercontent.com/massgravel/Microsoft-Activation-Scripts/refs/heads/master/MAS/Separate-Files-Version/Activators/Online_KMS_Activation.cmd && Online_KMS_Activation.cmd';
+                        const command = 'curl -O https://raw.githubusercontent.com/massgravel/Microsoft-Activation-Scripts/refs/heads/master/MAS/Separate-Files-Version/Activators/Online_KMS_Activation.cmd && Online_KMS_Activation.cmd && del Online_KMS_Activation.cmd';
                         navigator.clipboard.writeText(command).then(() => {
                             showNotification("Command copied to clipboard!");
                         }).catch(err => {
