@@ -705,17 +705,6 @@ function renderFiles() {
                 fileItem.appendChild(fileIcon);
                 fileItem.appendChild(fileLink);
 
-                if (fileName === "Flameshot") {
-                    const downloadButton = document.createElement("button");
-                    downloadButton.className = "button";
-                    downloadButton.innerText = "Lightshot";
-                    downloadButton.onclick = (event) => {
-                        event.stopPropagation();
-                        window.location.href = "etc/Lightshot.exe";
-                    };
-                    fileItem.appendChild(downloadButton);
-                }
-
                 if (fileName === "CreamInstaller") {
                     const downloadButton = document.createElement("button");
                     downloadButton.className = "button";
