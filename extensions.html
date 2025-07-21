@@ -465,16 +465,6 @@ document.addEventListener("DOMContentLoaded", function() {
         "SponsorBlock.crx": "https://chromewebstore.google.com/detail/sponsorblock-для-youtube/mnjggcdmjocbbbhaepdhchncahnbgone",
     };
 
-    function setHoverColor(fileItem, color) {
-        const threshold = 50;
-        const [r, g, b] = color;
-        if (r < threshold && g < threshold && b < threshold) {
-            fileItem.style.setProperty('--hover-color', 'rgba(75, 0, 130, 0.5)');
-        } else {
-            fileItem.style.setProperty('--hover-color', `rgba(${r}, ${g}, ${b}, 0.5)`);
-        }
-    }
-
     function getDominantColor(imageUrl, callback) {
         const colorThief = new ColorThief();
         const img = new Image();
