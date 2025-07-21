@@ -21,8 +21,8 @@ body {
 	width: 70%;
 }
 .file-item:hover {
-    border-color: #58a6ff;
-    box-shadow: 0 0 1em rgba(88, 166, 255, 5.5);
+    border-color: var(--hover-color);
+    box-shadow: 0 0 1em var(--hover-color);
 }
 @keyframes pulse {
     0% {
@@ -516,17 +516,6 @@ document.addEventListener("DOMContentLoaded", function() {
         renderTihiyDomItem();
     }
 
-		
-function setHoverColor(fileItem, color) {
-    const threshold = 50;
-    const [r, g, b] = color;
-    if (r < threshold && g < threshold && b < threshold) {
-        fileItem.style.setProperty('--hover-color', 'rgba(75, 0, 130, 0.5)'); 
-    } else {
-        fileItem.style.setProperty('--hover-color', `rgba(${r}, ${g}, ${b}, 0.5)`);
-    }
-}
-
 function getDominantColor(imageUrl, callback) {
     const colorThief = new ColorThief();
     const img = new Image();
@@ -590,6 +579,15 @@ document.addEventListener('click', (event) => {
     }
 });
 
+function setHoverColor(fileItem, color) {
+    const threshold = 50;
+    const [r, g, b] = color;
+    if (r < threshold && g < threshold && b < threshold) {
+        fileItem.style.setProperty('--hover-color', 'rgba(75, 0, 130, 0.5)'); 
+    } else {
+        fileItem.style.setProperty('--hover-color', `rgba(${r}, ${g}, ${b}, 0.5)`);
+    }
+}
 
 function setIconColorAndHover(fileItem, iconElement, colors) {
     let colorIndex = 0;
