@@ -579,16 +579,6 @@ document.addEventListener('click', (event) => {
     }
 });
 
-function setHoverColor(fileItem, color) {
-    const threshold = 50;
-    const [r, g, b] = color;
-    if (r < threshold && g < threshold && b < threshold) {
-        fileItem.style.setProperty('--hover-color', 'rgba(75, 0, 130, 0.5)'); 
-    } else {
-        fileItem.style.setProperty('--hover-color', `rgba(${r}, ${g}, ${b}, 0.5)`);
-    }
-}
-
 function setIconColorAndHover(fileItem, iconElement, colors) {
     let colorIndex = 0;
 
