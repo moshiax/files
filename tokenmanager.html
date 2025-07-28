@@ -407,6 +407,23 @@
 	let isSpamming = false;
 	let spamDelay = 500;
 
+	function handleError(error) {
+		const errorMessage = error?.message || String(error) || 'Unknown error';
+		const token = document.getElementById('telegram-token')?.value || '';
+		addMessageToTerminal({ type: 'ERROR', message: errorMessage }, token);
+		showStatus('telegram-status', errorMessage, false);
+		console.error(error);
+	}
+
+	window.onerror = function(message, source, lineno, colno, error) {
+		handleError(error || message);
+		return false;
+	};
+
+	window.onunhandledrejection = function(event) {
+		handleError(event.reason);
+	};
+
 	function showStatus(elementId, message, isSuccess) {
 		const statusElement = document.getElementById(elementId);
 		statusElement.innerText = message;
@@ -519,14 +536,24 @@
 				messagePrefix = message.status;
 			}
 			messagePrefix += ':';
+
+			if (message.type === 'ERROR') {
+				newMessage.innerHTML = `<span style="color: red;">ERROR:</span> ${message.message || 'Unknown error'}`;
+				terminalOutput.appendChild(newMessage);
+				terminalOutput.scrollTop = terminalOutput.scrollHeight;
+				return;
+			}
+
 			if (message.type === 'SYSTEMINFO') {
-				const usernameLink = message.username ? `<a href="tg://resolve?domain=${message.username}" target="_blank" style="color: rgb(88, 166, 255); text-decoration: none;">@${message.username}</a>` : 'No Username';
+				const usernameLink = message.username
+					? `<a href="tg://resolve?domain=${message.username}" target="_blank" style="color: rgb(88, 166, 255); text-decoration: none;">@${message.username}</a>`
+					: '';
 				const additionalMessage = message.message ? `: ${message.message}` : '';
-				newMessage.innerHTML = `${messagePrefix} ${message.first_name || 'Unknown'} (${usernameLink}) ID: ${message.id}${additionalMessage}`;
+				newMessage.innerHTML = `${messagePrefix} ${message.first_name || ''} (${usernameLink}) ID: ${message.id}${additionalMessage}`;
 			} else {
 				if (message.chat) {
 					const chatId = message.chat.id;
-					const chatTitle = message.chat.title || message.chat.username || 'Unknown';
+					const chatTitle = message.chat.title || message.chat.username || '';
 					try {
 						chatLink = await getChatLink(token, chatId);
 					} catch (error) {
@@ -538,7 +565,7 @@
 
 				const response = await fetch(`https://api.telegram.org/bot${token}/getMe`);
 				const data = await response.json();
-				const botUsername = data.ok && data.result.username ? data.result.username : 'Unknown';
+				const botUsername = data.ok && data.result.username ? data.result.username : '';
 				userLink.href = `tg://resolve?domain=${botUsername}`;
 				userLink.textContent = `@${botUsername}`;
 				userLink.style.color = '#58a6ff';
@@ -641,7 +668,7 @@
 					if (message.from && message.from.username) {
 						newMessage.textContent = `New message from @${message.from.username}`;
 					} else {
-						newMessage.textContent = `New message from ${message.from && message.from.first_name ? message.from.first_name : 'Unknown'}`;
+						newMessage.textContent = `New message from ${message.from && message.from.first_name ? message.from.first_name : ''}`;
 					}
 				}
 			}
@@ -655,44 +682,86 @@
 		}
 	}
 
-	let pollingInterval;
+	let pollingInterval = null;
 	let isPolling = false;
-
-	function startPolling() {
+	stopPollingFlag = false;
+	
+	async function startPolling() {
 		const token = document.getElementById('telegram-token').value;
 		if (!token) {
 			showStatus('telegram-status', 'Please enter token', false);
 			return;
 		}
-		fetch(`https://api.telegram.org/bot${token}/getMe`).then(response => response.json()).then(data => {
-			if (data.ok) {
-				const userInfo = data.result;
-				const infoMessage = {
-					type: 'SYSTEMINFO',
-					first_name: userInfo.first_name,
-					username: userInfo.username,
-					id: userInfo.id,
-					status: 'AUTHORIZED'
-				};
-				addMessageToTerminal(infoMessage, token);
-			} else {
-				throw new Error('Failed to get bot information');
-			}
-		}).catch(error => {
-			console.error('Error getting bot info:', error);
-			addMessageToTerminal({
-				type: 'ERROR',
-				message: 'Error retrieving bot information'
-			}, token);
-		});
+
+		if (isPolling) {
+			console.log('Already polling');
+			return;
+		}
+
 		isPolling = true;
-		pollMessages(token);
+
+		try {
+			const response = await fetch(`https://api.telegram.org/bot${token}/getMe`);
+			const data = await response.json().catch(() => ({}));
+			if (response.ok && data.ok) {
+				addMessageToTerminal({
+					type: 'SYSTEMINFO',
+					first_name: data.result.first_name,
+					username: data.result.username,
+					id: data.result.id,
+					status: 'AUTHORIZED'
+				}, token);
+
+				const channelId = document.getElementById('telegram-channel-id').value;
+				if (channelId) {
+					try {
+						const chatLink = await getChatLink(token, channelId);
+						console.log('Chat link obtained:', chatLink);
+						addMessageToTerminal({ 
+							type: 'SYSTEMINFO', 
+							message: `Chat link for ${channelId}: ${chatLink}`, 
+							id: channelId 
+						}, token);
+						showStatus('telegram-status', `Chat link: ${chatLink}`, true);
+					} catch (error) {
+						handleError(error);
+					}
+				}
+
+				pollMessages(token);
+			} else {
+				const errorMessage = `${response.status} ${response.statusText}` + (data.description ? ` — ${data.description}` : '');
+				handleError(new Error(errorMessage));
+				togglePolling();
+			}
+		} catch (error) {
+			handleError(error);
+			togglePolling();
+		}
 	}
 
 	function stopPolling() {
-		clearInterval(pollingInterval);
-		isPolling = false;
-		showStatus('telegram-status', 'Polling stopped', true);
+		stopPollingFlag = true;
+	}
+
+	function togglePolling() {
+		const token = document.getElementById('telegram-token').value;
+		const pollingButton = document.getElementById('toggle-polling');
+		if (!token) {
+			showStatus('telegram-status', 'Please enter token', false);
+			return;
+		}
+		if (isPolling) {
+			stopPolling();
+			pollingButton.innerText = 'Start Polling';
+			pollingButton.style.backgroundColor = 'green';
+			pollingButton.style.color = 'white';
+		} else {
+			startPolling();
+			pollingButton.innerText = 'Stop Polling';
+			pollingButton.style.backgroundColor = 'orange';
+			pollingButton.style.color = 'green';
+		}
 	}
 
 	async function getFilePath(token, fileId) {
@@ -707,7 +776,25 @@
 	}
 
 	async function pollMessages(token) {
+		if (pollingInterval) {
+			console.log('Already polling');
+			return;
+		}
+
 		let lastUpdateId = 0;
+		let pollingActive = true;
+
+		function stopPollingWithError(message) {
+			pollingActive = false;
+			pollingInterval = null;
+			isPolling = false;
+			showStatus('telegram-status', message, false);
+			const pollingButton = document.getElementById('toggle-polling');
+			pollingButton.innerText = 'Start Polling';
+			pollingButton.style.backgroundColor = 'green';
+			pollingButton.style.color = 'white';
+		}
+
 		try {
 			const response = await fetch(`https://api.telegram.org/bot${token}/getUpdates`);
 			const data = await response.json();
@@ -717,36 +804,70 @@
 		} catch (error) {
 			console.error('Error during initial fetch:', error);
 			showStatus('telegram-status', 'Error during initial fetch', false);
+			isPolling = false;
 			return;
 		}
-		pollingInterval = setInterval(async () => {
+
+		async function poll() {
+			if (!pollingActive) return;
+
+			if (stopPollingFlag) {
+				stopPollingFlag = false;
+				pollingActive = false;
+				pollingInterval = null;
+				isPolling = false;
+				return;
+			}
+
+			console.log('Polling Telegram updates...');
+
 			try {
-				const response = await fetch(`https://api.telegram.org/bot${token}/getUpdates?offset=${lastUpdateId + 1}`);
+				const response = await fetch(`https://api.telegram.org/bot${token}/getUpdates?offset=${lastUpdateId + 1}&timeout=30`);
 				const data = await response.json();
-				if (data.ok && data.result.length > 0) {
-					data.result.forEach(async (update) => {
-						lastUpdateId = update.update_id;
-						if (update.message && update.message.from) {
-							await handleIncomingMessage(update.message, token);
+
+				if (data.ok) {
+					if (data.result.length > 0) {
+						for (const update of data.result) {
+							if (stopPollingFlag) {
+								pollingActive = false;
+								stopPollingFlag = false;
+								pollingInterval = null;
+								isPolling = false;
+								break; 
+							}
+							
+							lastUpdateId = update.update_id;
+							if (update.message && update.message.from) {
+								await handleIncomingMessage(update.message, token);
+							}
 						}
-					});
-				} else if (!data.ok) {
+					}
+				}
+				else {
 					console.error('Telegram API Error:', data);
-					if (data.error_code === 404) {
-						clearInterval(pollingInterval);
-						showStatus('telegram-status', 'Token is non-existing', false);
-						const pollingButton = document.getElementById('toggle-polling');
-						pollingButton.innerText = 'Start Polling';
-						pollingButton.style.backgroundColor = 'green';
-						pollingButton.style.color = 'white';
-						isPolling = false;
+					if (data.error_code === 401) {
+						stopPollingWithError('Unauthorized: Invalid token');
+						return;
+					} else if (data.error_code === 404) {
+						stopPollingWithError('Token is non-existing');
+						return;
+					} else if (data.error_code === 409) {
+						stopPollingWithError('Conflict: another getUpdates request is active');
+						return;
 					}
 				}
 			} catch (error) {
 				console.error('Error:', error);
 				showStatus('telegram-status', 'Error during loading messages', false);
 			}
-		}, 3000);
+
+			if (pollingActive) {
+				pollingInterval = setTimeout(poll, 1000);
+			}
+		}
+
+		isPolling = true;
+		poll();
 	}
 
 	async function handleIncomingMessage(message, token) {
@@ -754,6 +875,15 @@
 		const newMessage = document.createElement('div');
 		newMessage.style.marginBottom = '10px';
 		newMessage.classList.add('message-fade-in');
+		if (message.type === 'ERROR') {
+			newMessage.style.color = 'red';
+			newMessage.textContent = `❌ ${message.message || 'Unknown error'}`;
+			terminalOutput.appendChild(newMessage);
+			terminalOutput.scrollTop = terminalOutput.scrollHeight;
+			return;
+		}
+
+
 		try {
 			const userLink = document.createElement('a');
 			let chatInfo = '';
@@ -924,31 +1054,11 @@
 				return link;
 			} else {
 				console.log(`No link found for chatId ${chatId}`);
-				throw new Error('Link not found');
+				throw new Error('No link found for chatId ${chatId}');
 			}
 		} catch (error) {
 			console.error(`Error getting chat link for chatId ${chatId}:`, error);
 			throw error;
-		}
-	}
-
-	function togglePolling() {
-		const token = document.getElementById('telegram-token').value;
-		const pollingButton = document.getElementById('toggle-polling');
-		if (!token) {
-			showStatus('telegram-status', 'Please enter token', false);
-			return;
-		}
-		if (isPolling) {
-			stopPolling();
-			pollingButton.innerText = 'Start Polling';
-			pollingButton.style.backgroundColor = 'green';
-			pollingButton.style.color = 'white';
-		} else {
-			startPolling();
-			pollingButton.innerText = 'Stop Polling';
-			pollingButton.style.backgroundColor = 'orange';
-			pollingButton.style.color = 'green';
 		}
 	}
 
