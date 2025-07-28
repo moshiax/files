@@ -1048,13 +1048,11 @@
 				}
 			}
 			if (link) {
-				linkCache[chatId] = {
-					link
-				};
+				linkCache[chatId] = { link };
 				return link;
 			} else {
 				console.log(`No link found for chatId ${chatId}`);
-				throw new Error('No link found for chatId ${chatId}');
+				throw new Error(`No link found for chatId ${chatId}`);
 			}
 		} catch (error) {
 			console.error(`Error getting chat link for chatId ${chatId}:`, error);
