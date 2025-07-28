@@ -742,6 +742,7 @@
 
 	function stopPolling() {
 		stopPollingFlag = true;
+		isPolling = false;
 	}
 
 	function togglePolling() {
@@ -782,13 +783,12 @@
 		}
 
 		let lastUpdateId = 0;
-		let pollingActive = true;
+		let isPolling = true;
 
 		function stopPollingWithError(message) {
-			pollingActive = false;
+			isPolling = false;
 			pollingInterval = null;
 			isPolling = false;
-			showStatus('telegram-status', message, false);
 			const pollingButton = document.getElementById('toggle-polling');
 			pollingButton.innerText = 'Start Polling';
 			pollingButton.style.backgroundColor = 'green';
@@ -809,11 +809,11 @@
 		}
 
 		async function poll() {
-			if (!pollingActive) return;
+			if (!isPolling) return;
 
 			if (stopPollingFlag) {
 				stopPollingFlag = false;
-				pollingActive = false;
+				isPolling = false;
 				pollingInterval = null;
 				isPolling = false;
 				return;
@@ -828,8 +828,8 @@
 				if (data.ok) {
 					if (data.result.length > 0) {
 						for (const update of data.result) {
-							if (stopPollingFlag) {
-								pollingActive = false;
+							if (stopPollingFlag || !isPolling) {
+								isPolling = false;
 								stopPollingFlag = false;
 								pollingInterval = null;
 								isPolling = false;
@@ -861,7 +861,7 @@
 				showStatus('telegram-status', 'Error during loading messages', false);
 			}
 
-			if (pollingActive) {
+			if (isPolling) {
 				pollingInterval = setTimeout(poll, 1000);
 			}
 		}
