@@ -492,30 +492,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     ];
 
-    const externalLinks = [];
-
-    function renderExternalLinks() {
-        externalLinks.forEach(link => {
-            const linkItem = document.createElement("div");
-            linkItem.className = "file-item";
-
-            const linkIcon = document.createElement("img");
-            linkIcon.src = link.icon_url;
-
-            const linkAnchor = document.createElement("a");
-            linkAnchor.href = link.url;
-            linkAnchor.target = "_blank";
-            linkAnchor.className = "file-link";
-            linkAnchor.innerText = link.name;
-
-            linkAnchor.prepend(linkIcon);
-            linkItem.appendChild(linkAnchor);
-            fileListElement.appendChild(linkItem);
-        });
-
-        renderTihiyDomItem();
-    }
-
 function getDominantColor(imageUrl, callback) {
     const colorThief = new ColorThief();
     const img = new Image();
@@ -865,7 +841,7 @@ confirmationInput.addEventListener('input', () => {
     confirmDownloadButton.disabled = confirmationInput.value !== "obfuscator.exe";
 });
 
-renderExternalLinks();
+renderTihiyDomItem();
 renderFiles();
 
 });

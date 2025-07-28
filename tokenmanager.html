@@ -696,7 +696,6 @@
 
 	let pollingInterval = null;
 	let isPolling = false;
-	stopPollingFlag = false;
 	
 	async function startPolling() {
 		const token = document.getElementById('telegram-token').value;
@@ -753,7 +752,6 @@
 	}
 
 	function stopPolling() {
-		stopPollingFlag = true;
 		isPolling = false;
 	}
 
@@ -821,13 +819,8 @@
 		}
 
 		async function poll() {
-			if (!isPolling) return;
-
-			if (stopPollingFlag) {
-				stopPollingFlag = false;
-				isPolling = false;
+			if (!isPolling) {
 				pollingInterval = null;
-				isPolling = false;
 				return;
 			}
 
@@ -840,11 +833,8 @@
 				if (data.ok) {
 					if (data.result.length > 0) {
 						for (const update of data.result) {
-							if (stopPollingFlag || !isPolling) {
-								isPolling = false;
-								stopPollingFlag = false;
+							if (!isPolling) {
 								pollingInterval = null;
-								isPolling = false;
 								break; 
 							}
 							
