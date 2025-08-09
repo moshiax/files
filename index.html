@@ -161,7 +161,7 @@ function createButton(text, onClick) {
 	btn.innerText = text;
 	btn.onclick = (e) => {
 		e.stopPropagation();
-		onClick();
+		onClick(e);
 	};
 	return btn;
 }
