@@ -727,13 +727,15 @@
 				if (channelId) {
 					try {
 						const chatLink = await getChatLink(token, channelId);
-						console.log('Chat link obtained:', chatLink);
-						addMessageToTerminal({ 
-							type: 'SYSTEMINFO', 
-							message: `Chat link for ${channelId}: ${chatLink}`, 
-							id: channelId 
-						}, token);
-						showStatus('telegram-status', `Chat link: ${chatLink}`, true);
+						if (chatLink) { 
+							console.log('Chat link obtained:', chatLink);
+							addMessageToTerminal({ 
+								type: 'SYSTEMINFO', 
+								message: `Chat link for ${channelId}: ${chatLink}`, 
+								id: channelId 
+							}, token);
+							showStatus('telegram-status', `Chat link: ${chatLink}`, true);
+						}
 					} catch (error) {
 						handleError(error);
 					}
@@ -797,11 +799,11 @@
 		function stopPollingWithError(message) {
 			isPolling = false;
 			pollingInterval = null;
-			isPolling = false;
 			const pollingButton = document.getElementById('toggle-polling');
 			pollingButton.innerText = 'Start Polling';
 			pollingButton.style.backgroundColor = 'green';
 			pollingButton.style.color = 'white';
+			handleError(new Error(message));
 		}
 
 		try {
@@ -811,8 +813,7 @@
 				lastUpdateId = data.result[data.result.length - 1].update_id;
 			}
 		} catch (error) {
-			console.error('Error during initial fetch:', error);
-			showStatus('telegram-status', 'Error during initial fetch', false);
+			handleError(error);
 			isPolling = false;
 			return;
 		}
@@ -834,18 +835,16 @@
 						for (const update of data.result) {
 							if (!isPolling) {
 								pollingInterval = null;
-								break; 
+								break;
 							}
-							
+
 							lastUpdateId = update.update_id;
 							if (update.message && update.message.from) {
 								await handleIncomingMessage(update.message, token);
 							}
 						}
 					}
-				}
-				else {
-					console.error('Telegram API Error:', data);
+				} else {
 					if (data.error_code === 401) {
 						stopPollingWithError('Unauthorized: Invalid token');
 						return;
@@ -855,11 +854,12 @@
 					} else if (data.error_code === 409) {
 						stopPollingWithError('Conflict: another getUpdates request is active');
 						return;
+					} else {
+						handleError(new Error(`Telegram API Error: ${data.description || 'Unknown error'}`));
 					}
 				}
 			} catch (error) {
-				console.error('Error:', error);
-				showStatus('telegram-status', 'Error during loading messages', false);
+				handleError(error);
 			}
 
 			if (isPolling) {
@@ -1034,7 +1034,8 @@
 	async function getChatLink(token, chatId) {
 		if (linkCache[chatId]) {
 			if (linkCache[chatId].error) {
-				throw new Error(`Cached error for chatId ${chatId}: ${linkCache[chatId].error}`);
+				console.log(`Cached error for chatId ${chatId}: ${linkCache[chatId].error}`);
+				return null; 
 			}
 			if (linkCache[chatId].link) {
 				console.log(`Link for chatId ${chatId} found in cache: ${linkCache[chatId].link}`);
@@ -1071,12 +1072,12 @@
 				const errorMessage = `No link found for chatId ${chatId}`;
 				console.log(errorMessage);
 				linkCache[chatId] = { error: errorMessage };
-				throw new Error(errorMessage);
+				return null;
 			}
 		} catch (error) {
 			console.error(`Error getting chat link for chatId ${chatId}:`, error);
 			linkCache[chatId] = { error: error.message };
-			throw error;
+			return null;
 		}
 	}
 
