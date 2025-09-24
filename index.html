@@ -31,35 +31,36 @@
 </div>
 <script>
 const filesToFetch = [
-	{ name: "AIDA64.exe", download_url: "exe/AIDA64.exe", icon_url: "exe/AIDA64.png" },
-	{ name: "auCDtect.zip", download_url: "exe/auCDtect.zip", icon_url: "exe/auCDtect.png" },
-	{ name: "Autorun Organizer.exe", download_url: "exe/Autorun Organizer.exe", icon_url: "exe/Autorun Organizer.png" },
-	{ name: "balenaEtcher-1.19.21.Setup.exe", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon_url: "exe/balenaEtcher-1.19.21.Setup.png" },
-	{ name: "Beznogy Disk Info.zip", download_url: "exe/Beznogy Disk Info.zip", icon_url: "exe/Beznogy Disk Info.png" },
-	{ name: "BLTools.zip", download_url: "exe/BLTools.zip", icon_url: "exe/BLTools.png" },
-	{ name: "CreamInstaller.exe", download_url: "https://roaring-starship-2d8530.netlify.app/CreamInstaller.exe", icon_url: "exe/CreamInstaller.png" },
-	{ name: "Driver Booster.zip", download_url: "exe/Driver Booster.zip", icon_url: "exe/Driver Booster.png" },
-	{ name: "EqualizerAPO.exe", download_url: "exe/EqualizerAPO.exe", icon_url: "exe/EqualizerAPO.png" },
-	{ name: "Flameshot.msi", download_url: "exe/Flameshot.msi", icon_url: "exe/Flameshot.png" },
-	{ name: "HTTrack.exe", download_url: "exe/HTTrack.exe", icon_url: "exe/HTTrack.png" },
-	{ name: "iconspacing.exe", download_url: "exe/iconspacing.exe", icon_url: "exe/iconspacing.png" },
-	{ name: "KLite.exe", download_url: "exe/KLite.exe", icon_url: "exe/KLite.png" },
-	{ name: "MapKeyboard.exe", download_url: "exe/MapKeyboard.exe", icon_url: "exe/MapKeyboard.png" },
-	{ name: "MAS.zip", download_url: "exe/MAS.zip", icon_url: "exe/MAS.png" },
-	{ name: "masscan.zip", download_url: "exe/masscan.zip", icon_url: "exe/masscan.png" },
-	{ name: "qBittorrent.exe", download_url: "exe/qBittorrent.exe", icon_url: "exe/qBittorrent.png" },
-	{ name: "Recuva.zip", download_url: "exe/Recuva.zip", icon_url: "exe/Recuva.png" },
-	{ name: "Resource Hacker.exe", download_url: "exe/Resource Hacker.exe", icon_url: "exe/Resource Hacker.png" },
-	{ name: "Steam Achievement Manager.zip", download_url: "exe/Steam Achievement Manager.zip", icon_url: "exe/Steam Achievement Manager.png" },
-	{ name: "System Informer.exe", download_url: "exe/System Informer.exe", icon_url: "exe/System Informer.png" },
-	{ name: "Telehack.zip", download_url: "exe/Telehack.zip", icon_url: "exe/Telehack.png" },
-	{ name: "TranslucentTB.zip", download_url: "exe/TranslucentTB.zip", icon_url: "exe/TranslucentTB.png" },
-	{ name: "TreeSize.exe", download_url: "exe/TreeSize.exe", icon_url: "exe/TreeSize.png" },
-	{ name: "Win 10 Tweaker.exe", download_url: "exe/Win 10 Tweaker.exe", icon_url: "exe/Win 10 Tweaker.png" },
-	{ name: "Windows Terminal.zip", download_url: "exe/Windows Terminal.zip", icon_url: "exe/Windows Terminal.png" },
-	{ name: "WinRAR.zip", download_url: "exe/WinRAR.zip", icon_url: "exe/WinRAR.png" },
-	{ name: "Photoshop 2024", download_url: "etc/Photoshop 2024.torrent", icon_url: "etc/Photoshop 2024.png" },
-	{ name: "Wondershare Filmora", download_url: "etc/Wondershare Filmora.torrent", icon_url: "etc/Wondershare Filmora.png" }
+	{ name: "AIDA64.exe", download_url: "exe/AIDA64.exe", icon_url: "exe-icons/AIDA64.png" },
+	{ name: "auCDtect", download_url: "exe/auCDtect.zip", icon_url: "exe-icons/auCDtect.png" },
+	{ name: "Autorun Organizer", download_url: "exe/Autorun Organizer.exe", icon_url: "exe-icons/Autorun Organizer.png" },
+	{ name: "balenaEtcher", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon_url: "exe-icons/balenaEtcher-1.19.21.Setup.png" },
+	{ name: "Beznogy Disk Info", download_url: "exe/Beznogy Disk Info.zip", icon_url: "exe-icons/Beznogy Disk Info.png" },
+	{ name: "BLTools", download_url: "exe/BLTools.zip", icon_url: "exe-icons/BLTools.png" },
+	{ name: "CreamInstaller", download_url: "https://roaring-starship-2d8530.netlify.app/CreamInstaller.exe", icon_url: "exe-icons/CreamInstaller.png" },
+	{ name: "Driver Booster", download_url: "exe/Driver Booster.zip", icon_url: "exe-icons/Driver Booster.png" },
+	{ name: "EqualizerAPO", download_url: "exe/EqualizerAPO.exe", icon_url: "exe-icons/EqualizerAPO.png" },
+	{ name: "Flameshot", download_url: "exe/Flameshot.msi", icon_url: "exe-icons/Flameshot.png" },
+	{ name: "HTTrack", download_url: "exe/HTTrack.exe", icon_url: "exe-icons/HTTrack.png" },
+	{ name: "iconspacing", download_url: "exe/iconspacing.exe", icon_url: "exe-icons/iconspacing.png" },
+	{ name: "KLite", download_url: "exe/KLite.exe", icon_url: "exe-icons/KLite.png" },
+	{ name: "MapKeyboard", download_url: "exe/MapKeyboard.exe", icon_url: "exe-icons/MapKeyboard.png" },
+	{ name: "MAS", download_url: "exe/MAS.zip", icon_url: "exe-icons/MAS.png" },
+	{ name: "masscan", download_url: "exe/masscan.zip", icon_url: "exe-icons/masscan.png" },
+	{ name: "qBittorrent", download_url: "exe/qBittorrent.exe", icon_url: "exe-icons/qBittorrent.png" },
+	{ name: "Resource Hacker", download_url: "exe/Resource Hacker.exe", icon_url: "exe-icons/Resource Hacker.png" },
+	{ name: "Steam Achievement Manager", download_url: "exe/Steam Achievement Manager.zip", icon_url: "exe-icons/Steam Achievement Manager.png" },
+	{ name: "System Informer", download_url: "exe/System Informer.exe", icon_url: "exe-icons/System Informer.png" },
+	{ name: "Telehack", download_url: "exe/Telehack.zip", icon_url: "exe-icons/Telehack.png" },
+	{ name: "TranslucentTB", download_url: "exe/TranslucentTB.zip", icon_url: "exe-icons/TranslucentTB.png" },
+	{ name: "TreeSize", download_url: "exe/TreeSize.exe", icon_url: "exe-icons/TreeSize.png" },
+	{ name: "Win 10 Tweaker", download_url: "exe/Win 10 Tweaker.exe", icon_url: "exe-icons/Win 10 Tweaker.png" },
+	{ name: "Windows Terminal", download_url: "exe/Windows Terminal.zip", icon_url: "exe-icons/Windows Terminal.png" },
+	{ name: "WinRAR", download_url: "exe/WinRAR.zip", icon_url: "exe-icons/WinRAR.png" },
+	{ name: "Photoshop 2024", download_url: "exe/Photoshop 2024.torrent", icon_url: "exe-icons/Photoshop 2024.png" },
+	{ name: "Wondershare Filmora", download_url: "exe/Wondershare Filmora.torrent", icon_url: "exe-icons/Wondershare Filmora.png" },
+	{ name: "WinHex", download_url: "exe/WinHex.zip", icon_url: "exe-icons/WinHex.png" },
+	{ name: "Forensics", download_url: "exe/Forensics.exe", icon_url: "exe-icons/Forensics.png" }
 ];
 
 const extensions = [
@@ -77,11 +78,11 @@ const extensions = [
 
 const siteLinks = [
 	{ name: "Neiki", url: "https://tip.neiki.dev", icon: "sites-icons/Neiki.png" },
-	{ name: "Triage", url: "https://tria.ge", icon: "exe/triage.png" },
-	{ name: "Smail", url: "https://smailpro.com/temporary-email", icon: "exe/smail.png" },
-	{ name: "BeznogyCrypt", url: "https://beznogycrypt.netlify.app", icon: "exe/beznogycrypt.png" },
-	{ name: "botToken Manager", url: "https://moshiax.github.io/files/tokenmanager", icon: "exe/tokenmanager.png" },
-	{ name: "botWebhook Manager", url: "https://moshiax.github.io/files/discordmanager", icon: "exe/kozlinyadiscord.png" },
+	{ name: "Triage", url: "https://tria.ge", icon: "sites-icons/triage.png" },
+	{ name: "Smail", url: "https://smailpro.com/temporary-email", icon: "sites-icons/smail.png" },
+	{ name: "BeznogyCrypt", url: "https://beznogycrypt.netlify.app", icon: "sites-icons/beznogycrypt.png" },
+	{ name: "botToken Manager", url: "https://moshiax.github.io/files/tokenmanager", icon: "sites-icons/tokenmanager.png" },
+	{ name: "botWebhook Manager", url: "https://moshiax.github.io/files/discordmanager", icon: "sites-icons/kozlinyadiscord.png" },
 	{ name: "PyStatic", url: "https://staticanalyze.netlify.app/injector/viewer/static", icon: "sites-icons/PyStatic.png" },
 	{ name: "youtube666", url: "https://moshiax.github.io/youtube666/", icon: "sites-icons/666.jpg" },
 	{ name: "WebOTP", url: "https://moshiax.github.io/WebOTP", icon: "https://moshiax.github.io/WebOTP/icon.png" },
@@ -128,7 +129,7 @@ const specialHandlers = {
 	CreamInstaller: (fileItem) => {
 		console.log("Special handler: CreamInstaller");
 		const button = createButton("Runtime", () => {
-			window.location.href = "etc/windowsdesktop-runtime-8.0.7-win-x64.exe";
+			window.location.href = "exe/windowsdesktop-runtime-8.0.7-win-x64.exe";
 		});
 		fileItem.appendChild(button);
 	},
