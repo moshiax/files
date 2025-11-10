@@ -128,14 +128,12 @@ const fileListElement = document.getElementById("file-list");
 
 const specialHandlers = {
 	CreamInstaller: (fileItem) => {
-		console.log("Special handler: CreamInstaller");
 		const button = createButton("Runtime", () => {
 			window.location.href = "exe/windowsdesktop-runtime-8.0.7-win-x64.exe";
 		});
 		fileItem.appendChild(button);
 	},
 	MAS: (fileItem) => {
-		console.log("Special handler: MAS");
 		const button = createButton("CMD (online)", () => {
 			const command = 'curl -O https://raw.githubusercontent.com/moshiax/files/main/exe/MAS.zip && tar -xf MAS.zip && MAS.cmd && del MAS.cmd && del MAS.zip';
 			navigator.clipboard.writeText(command)
@@ -145,15 +143,19 @@ const specialHandlers = {
 		fileItem.appendChild(button);
 	},
 	"Photoshop 2024": (fileItem) => {
-		console.log("Special handler: Photoshop 2024");
 		const button = createButton("hosts", showHostsModal);
 		fileItem.appendChild(button);
 	},
 	"Wondershare Filmora": (fileItem) => {
-		console.log("Special handler: Wondershare Filmora");
 		const button = createButton("hosts", showHostsModal);
 		fileItem.appendChild(button);
 	},
+	"WinRAR": (fileItem) => {
+		const button = createButton("keygen", () => {
+			window.open("https://moshiax.github.io/WinRAR-Keygen/", "_blank");
+		});
+		fileItem.appendChild(button);
+	}
 };
 
 const iconLoadingPromises = {};
