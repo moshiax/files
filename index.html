@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>files</title>
+<link rel="stylesheet" href="styles.css">
+<script>!function(t,o){"object"==typeof exports&&"undefined"!=typeof module?module.exports=o():"function"==typeof define&&define.amd?define(o):t.ColorThief=o()}(this,function(){if(!t)var t={map:function(t,o){var n={};return o?t.map(function(t,r){return n.index=r,o.call(n,t)}):t.slice()},naturalOrder:function(t,o){return t<o?-1:t>o?1:0},sum:function(t,o){var n={};return t.reduce(o?function(t,r,e){return n.index=e,t+o.call(n,r)}:function(t,o){return t+o},0)},max:function(o,n){return Math.max.apply(null,n?t.map(o,n):o)}};var o=function(){function o(t,o,n){return(t<<10)+(o<<5)+n}function n(t){var o=[],n=!1;function r(){o.sort(t),n=!0}return{push:function(t){o.push(t),n=!1},peek:function(t){return n||r(),void 0===t&&(t=o.length-1),o[t]},pop:function(){return n||r(),o.pop()},size:function(){return o.length},map:function(t){return o.map(t)},debug:function(){return n||r(),o}}}function r(t,o,n,r,e,u,s){this.r1=t,this.r2=o,this.g1=n,this.g2=r,this.b1=e,this.b2=u,this.histo=s}function e(){this.vboxes=new n(function(o,n){return t.naturalOrder(o.vbox.count()*o.vbox.volume(),n.vbox.count()*n.vbox.volume())})}function u(n,r){if(r.count()){var e=r.r2-r.r1+1,u=r.g2-r.g1+1,s=t.max([e,u,r.b2-r.b1+1]);if(1==r.count())return[r.copy()];var a,h,c,f,l=0,_=[],v=[];if(s==e)for(a=r.r1;a<=r.r2;a++){for(f=0,h=r.g1;h<=r.g2;h++)for(c=r.b1;c<=r.b2;c++)f+=n[o(a,h,c)]||0;_[a]=l+=f}else if(s==u)for(a=r.g1;a<=r.g2;a++){for(f=0,h=r.r1;h<=r.r2;h++)for(c=r.b1;c<=r.b2;c++)f+=n[o(h,a,c)]||0;_[a]=l+=f}else for(a=r.b1;a<=r.b2;a++){for(f=0,h=r.r1;h<=r.r2;h++)for(c=r.g1;c<=r.g2;c++)f+=n[o(h,c,a)]||0;_[a]=l+=f}return _.forEach(function(t,o){v[o]=l-t}),function(t){var o,n,e,u,s,h=t+"1",c=t+"2",f=0;for(a=r[h];a<=r[c];a++)if(_[a]>l/2){for(e=r.copy(),u=r.copy(),s=(o=a-r[h])<=(n=r[c]-a)?Math.min(r[c]-1,~~(a+n/2)):Math.max(r[h],~~(a-1-o/2));!_[s];)s++;for(f=v[s];!f&&_[s-1];)f=v[--s];return e[c]=s,u[h]=e[c]+1,[e,u]}}(s==e?"r":s==u?"g":"b")}}return r.prototype={volume:function(t){return this._volume&&!t||(this._volume=(this.r2-this.r1+1)*(this.g2-this.g1+1)*(this.b2-this.b1+1)),this._volume},count:function(t){var n=this.histo;if(!this._count_set||t){var r,e,u,s=0;for(r=this.r1;r<=this.r2;r++)for(e=this.g1;e<=this.g2;e++)for(u=this.b1;u<=this.b2;u++)s+=n[o(r,e,u)]||0;this._count=s,this._count_set=!0}return this._count},copy:function(){return new r(this.r1,this.r2,this.g1,this.g2,this.b1,this.b2,this.histo)},avg:function(t){var n=this.histo;if(!this._avg||t){var r,e,u,s,a=0,h=0,c=0,f=0;for(e=this.r1;e<=this.r2;e++)for(u=this.g1;u<=this.g2;u++)for(s=this.b1;s<=this.b2;s++)a+=r=n[o(e,u,s)]||0,h+=r*(e+.5)*8,c+=r*(u+.5)*8,f+=r*(s+.5)*8;this._avg=a?[~~(h/a),~~(c/a),~~(f/a)]:[~~(8*(this.r1+this.r2+1)/2),~~(8*(this.g1+this.g2+1)/2),~~(8*(this.b1+this.b2+1)/2)]}return this._avg},contains:function(t){var o=t[0]>>3;return gval=t[1]>>3,bval=t[2]>>3,o>=this.r1&&o<=this.r2&&gval>=this.g1&&gval<=this.g2&&bval>=this.b1&&bval<=this.b2}},e.prototype={push:function(t){this.vboxes.push({vbox:t,color:t.avg()})},palette:function(){return this.vboxes.map(function(t){return t.color})},size:function(){return this.vboxes.size()},map:function(t){for(var o=this.vboxes,n=0;n<o.size();n++)if(o.peek(n).vbox.contains(t))return o.peek(n).color;return this.nearest(t)},nearest:function(t){for(var o,n,r,e=this.vboxes,u=0;u<e.size();u++)((n=Math.sqrt(Math.pow(t[0]-e.peek(u).color[0],2)+Math.pow(t[1]-e.peek(u).color[1],2)+Math.pow(t[2]-e.peek(u).color[2],2)))<o||void 0===o)&&(o=n,r=e.peek(u).color);return r},forcebw:function(){var o=this.vboxes;o.sort(function(o,n){return t.naturalOrder(t.sum(o.color),t.sum(n.color))});var n=o[0].color;n[0]<5&&n[1]<5&&n[2]<5&&(o[0].color=[0,0,0]);var r=o.length-1,e=o[r].color;e[0]>251&&e[1]>251&&e[2]>251&&(o[r].color=[255,255,255])}},{quantize:function(s,a){if(!s.length||a<2||a>256)return!1;var h,c,f,l,_,v,$,p,g,d,b,m,x,y,w=(h=s,f=Array(32768),h.forEach(function(t){f[c=o(t[0]>>3,t[1]>>3,t[2]>>3)]=(f[c]||0)+1}),f);w.forEach(function(){});var C=(l=s,_=w,g=1e6,d=0,b=1e6,m=0,x=1e6,y=0,l.forEach(function(t){(v=t[0]>>3)<g?g=v:v>d&&(d=v),($=t[1]>>3)<b?b=$:$>m&&(m=$),(p=t[2]>>3)<x?x=p:p>y&&(y=p)}),new r(g,d,b,m,x,y,_)),z=new n(function(o,n){return t.naturalOrder(o.count(),n.count())});function E(t,o){for(var n,r=t.size(),e=0;e<1e3;){if(r>=o||e++>1e3)return;if((n=t.pop()).count()){var s=u(w,n),a=s[0],h=s[1];if(!a)return;t.push(a),h&&(t.push(h),r++)}else t.push(n),e++}}z.push(C),E(z,.75*a);for(var I=new n(function(o,n){return t.naturalOrder(o.count()*o.volume(),n.count()*n.volume())});z.size();)I.push(z.pop());E(I,a);for(var k=new e;I.size();)k.push(I.pop());return k}}}().quantize,n=function(t){this.canvas=document.createElement("canvas"),this.context=this.canvas.getContext("2d"),this.width=this.canvas.width=t.naturalWidth,this.height=this.canvas.height=t.naturalHeight,this.context.drawImage(t,0,0,this.width,this.height)};n.prototype.getImageData=function(){return this.context.getImageData(0,0,this.width,this.height)};var r=function(){};return r.prototype.getColor=function(t,o){return void 0===o&&(o=10),this.getPalette(t,5,o)[0]},r.prototype.getPalette=function(t,r,e){var u=function(t){var o=t.colorCount,n=t.quality;if(void 0!==o&&Number.isInteger(o)){if(1===o)throw Error("colorCount should be between 2 and 20. To get one color, call getColor() instead of getPalette()");o=Math.min(o=Math.max(o,2),20)}else o=10;return(void 0===n||!Number.isInteger(n)||n<1)&&(n=10),{colorCount:o,quality:n}}({colorCount:r,quality:e}),s=new n(t),a=o(function(t,o,n){for(var r=t,e=[],u=0,s=void 0,a=void 0,h=void 0,c=void 0,f=void 0;u<o;u+=n)a=r[0+(s=4*u)],h=r[s+1],c=r[s+2],(void 0===(f=r[s+3])||f>=125)&&(a>250&&h>250&&c>250||e.push([a,h,c]));return e}(s.getImageData().data,s.width*s.height,u.quality),u.colorCount);return a?a.palette():null},r.prototype.getColorFromUrl=function(t,o,n){var r=this,e=document.createElement("img");e.addEventListener("load",function(){o(r.getPalette(e,5,n)[0],t)}),e.src=t},r.prototype.getImageData=function(t,o){var n=new XMLHttpRequest;n.open("GET",t,!0),n.responseType="arraybuffer",n.onload=function(){if(200==this.status){var t=new Uint8Array(this.response);i=t.length;for(var n=Array(i),r=0;r<t.length;r++)n[r]=String.fromCharCode(t[r]);var e=n.join("");o("data:image/png;base64,"+window.btoa(e))}},n.send()},r.prototype.getColorAsync=function(t,o,n){var r=this;this.getImageData(t,function(t){var e=document.createElement("img");e.addEventListener("load",function(){o(r.getPalette(e,5,n)[0],this)}),e.src=t})},r});</script>
+</head>
+<body>
+
+<div class="button-container">
+    <button class="button-half left-button" onclick="switchTab('extensions')">Extensions</button>
+    <button class="button-half middle-button" onclick="switchTab('files')">Files</button>
+    <button class="button-half right-button" onclick="switchTab('sites')">Sites</button>
+</div>
+
+<div id="notification" class="notification"><p></p></div>
+
+<div id="app">
+    <div id="file-list"></div>
+</div>
+
+<div id="hosts-modal" class="modal-container">
+    <div class="modal-content">
+        <h2>Hosts</h2>
+        <button id="copy-path">Copy Path</button>
+        <button id="cancel-hosts">Cancel</button>
+        <button id="confirm-hosts-download">Download Hosts</button>
+    </div>
+</div>
+<script>
+const filesToFetch = [
+	{ name: "AIDA64.exe", download_url: "exe/AIDA64.exe", icon_url: "exe-icons/AIDA64.png" },
+	{ name: "auCDtect", download_url: "exe/auCDtect.zip", icon_url: "exe-icons/auCDtect.png" },
+	{ name: "Autorun Organizer", download_url: "exe/Autorun Organizer.exe", icon_url: "exe-icons/Autorun Organizer.png" },
+	{ name: "balenaEtcher", download_url: "https://github.com/balena-io/etcher/releases/download/v1.19.21/balenaEtcher-1.19.21.Setup.exe", icon_url: "exe-icons/balenaEtcher-1.19.21.Setup.png" },
+	{ name: "Beznogy Disk Info", download_url: "exe/Beznogy Disk Info.zip", icon_url: "exe-icons/Beznogy Disk Info.png" },
+	{ name: "BLTools", download_url: "exe/BLTools.zip", icon_url: "exe-icons/BLTools.png" },
+	{ name: "CreamInstaller", download_url: "https://roaring-starship-2d8530.netlify.app/CreamInstaller.exe", icon_url: "exe-icons/CreamInstaller.png" },
+	{ name: "Driver Booster", download_url: "exe/Driver Booster.zip", icon_url: "exe-icons/Driver Booster.png" },
+	{ name: "EqualizerAPO", download_url: "exe/EqualizerAPO.exe", icon_url: "exe-icons/EqualizerAPO.png" },
+	{ name: "Flameshot", download_url: "exe/Flameshot.msi", icon_url: "exe-icons/Flameshot.png" },
+	{ name: "HTTrack", download_url: "exe/HTTrack.exe", icon_url: "exe-icons/HTTrack.png" },
+	{ name: "iconspacing", download_url: "exe/iconspacing.exe", icon_url: "exe-icons/iconspacing.png" },
+	{ name: "KLite", download_url: "exe/KLite.exe", icon_url: "exe-icons/KLite.png" },
+	{ name: "MapKeyboard", download_url: "exe/MapKeyboard.exe", icon_url: "exe-icons/MapKeyboard.png" },
+	{ name: "MAS", download_url: "exe/MAS.zip", icon_url: "exe-icons/MAS.png" },
+	{ name: "masscan", download_url: "exe/masscan.zip", icon_url: "exe-icons/masscan.png" },
+	{ name: "qBittorrent", download_url: "exe/qBittorrent.exe", icon_url: "exe-icons/qBittorrent.png" },
+	{ name: "Resource Hacker", download_url: "exe/Resource Hacker.exe", icon_url: "exe-icons/Resource Hacker.png" },
+	{ name: "Steam Achievement Manager", download_url: "exe/Steam Achievement Manager.zip", icon_url: "exe-icons/Steam Achievement Manager.png" },
+	{ name: "System Informer", download_url: "exe/System Informer.exe", icon_url: "exe-icons/System Informer.png" },
+	{ name: "Telehack", download_url: "exe/Telehack.zip", icon_url: "exe-icons/Telehack.png" },
+	{ name: "TranslucentTB", download_url: "exe/TranslucentTB.zip", icon_url: "exe-icons/TranslucentTB.png" },
+	{ name: "TreeSize", download_url: "exe/TreeSize.exe", icon_url: "exe-icons/TreeSize.png" },
+	{ name: "Win 10 Tweaker", download_url: "exe/Win 10 Tweaker.exe", icon_url: "exe-icons/Win 10 Tweaker.png" },
+	{ name: "Windows Terminal", download_url: "exe/Windows Terminal.zip", icon_url: "exe-icons/Windows Terminal.png" },
+	{ name: "WinRAR", download_url: "https://win-rar.com/postdownload.html#newTab", icon_url: "exe-icons/WinRAR.png" },
+	{ name: "Photoshop 2024", download_url: "exe/Photoshop 2024.torrent", icon_url: "exe-icons/Photoshop 2024.png" },
+	{ name: "Wondershare Filmora", download_url: "exe/Wondershare Filmora.torrent", icon_url: "exe-icons/Wondershare Filmora.png" },
+	{ name: "WinHex", download_url: "exe/WinHex.zip", icon_url: "exe-icons/WinHex.png" },
+	{ name: "Forensics", download_url: "exe/Forensics.exe", icon_url: "exe-icons/Forensics.png" },
+	{ name: "Cheat Engine", download_url: "exe/Cheat Engine.zip", icon_url: "exe-icons/Cheat Engine.png" }
+];
+
+const extensions = [
+  { name: "AdGuard", url: "extensions/AdGuard.crx", web: "https://chromewebstore.google.com/detail/adguard-adblocker/bgnkhhnnamicmpeenaelnjfhikgbkllg", icon: "extensions-icons/AdGuard.png" },
+  { name: "Linguist", url: "extensions/Linguist.crx", web: "https://chromewebstore.google.com/detail/gbefmodhlophhakmoecijeppjblibmie", icon: "extensions-icons/Linguist.png" },
+  { name: "SaveFrom", url: "extensions/SaveFrom.crx", web: "https://en1.savefrom.net/2ol/", icon: "extensions-icons/SaveFrom.png" },
+  { name: "ReplicateUI", url: "extensions/ReplicateUI.crx", web: "https://github.com/moshiax/ReplicateUI/", icon: "extensions-icons/ReplicateUI.png" },
+  { name: "SteamRedirect", url: "extensions/SteamRedirect.crx", web: "https://github.com/moshiax/SteamRedirect/", icon: "extensions-icons/SteamRedirect.png" },
+  { name: "Discord Token Login", url: "extensions/Discord%20Token%20Login.crx", web: "https://chromewebstore.google.com/detail/kfjglmgfjedhhcddpfgfogkahmenikan", icon: "extensions-icons/Discord%20Token%20Login.png" },
+  { name: "OffYTBullshit", url: "https://github.com/moshiax/Off-Youtube-Bullshit/releases/latest/download/Off-Youtube-Bullshit.crx", icon: "extensions-icons/OffYTBullshit.png" },
+  { name: "uBlock Origin", url: "extensions/uBlock%20Origin.crx", web: "https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm", icon: "extensions-icons/uBlock%20Origin.png" },
+  { name: "SponsorBlock", url: "extensions/SponsorBlock.crx", web: "https://chromewebstore.google.com/detail/sponsorblock-for-youtube/mnjggcdmjocbbbhaepdhchncahnbgone", icon: "extensions-icons/SponsorBlock.png" },
+  { name: "Get-cookies.txt", url: "https://github.com/moshiax/Get-cookies.txt-LOCALLY/releases/latest/download/Get-cookies.txt-LOCALLY.crx", icon: "extensions-icons/getcookies.png" }
+];
+
+const siteLinks = [
+	{ name: "Neiki", url: "https://tip.neiki.dev", icon: "sites-icons/Neiki.png" },
+	{ name: "Triage", url: "https://tria.ge", icon: "sites-icons/triage.png" },
+	{ name: "Smail", url: "https://smailpro.com/temporary-email", icon: "sites-icons/smail.png" },
+	{ name: "BeznogyCrypt", url: "https://beznogycrypt.netlify.app", icon: "sites-icons/beznogycrypt.png" },
+	{ name: "botToken Manager", url: "https://moshiax.github.io/files/tokenmanager", icon: "sites-icons/tokenmanager.png" },
+	{ name: "botWebhook Manager", url: "https://moshiax.github.io/files/discordmanager", icon: "sites-icons/kozlinyadiscord.png" },
+	{ name: "PyStatic", url: "https://staticanalyze.netlify.app/injector/viewer/static", icon: "sites-icons/PyStatic.png" },
+	{ name: "youtube666", url: "https://moshiax.github.io/youtube666/", icon: "sites-icons/666.png" },
+	{ name: "WebOTP", url: "https://moshiax.github.io/WebOTP", icon: "https://moshiax.github.io/WebOTP/icon.png" },
+	{ name: "Nyaa", url: "https://nyaa.si", icon: "sites-icons/nyaa.png" },
+	{ name: "Session", url: "https://getsession.org", icon: "https://pbs.twimg.com/profile_images/1510100602197471233/PL-YIcwt_400x400.jpg" },
+	{ name: "Lokinet", url: "https://lokinet.org", icon: "https://pbs.twimg.com/profile_images/1384037340457234432/sWQtmZo4_400x400.png" },
+	{ name: "Filestash (Web FTP)", url: "https://demo.filestash.app/login", icon: "https://raw.githubusercontent.com/mickael-kerjean/filestash/refs/heads/master/public/assets/logo/android-chrome-192x192.png" },
+	{ name: "FrontPlayground", url: "https://moshiax.github.io/FrontPlayground/", icon: "https://moshiax.github.io/FrontPlayground/icon.png" },
+	{ name: "plyrplayer", url: "https://moshiax.github.io/plyrplayer", icon: "https://moshiax.github.io/plyrplayer/180x180.png" }
+];
+</script>
+<script>
+function showNotification(message) {
+    const n = document.getElementById('notification');
+    n.querySelector('p').innerText = message;
+    n.style.display = 'block';
+    n.style.animation = 'fadeIn 0.5s';
+    setTimeout(() => {
+        n.style.animation = 'fadeOut 0.5s';
+        setTimeout(() => n.style.display = 'none', 500);
+    }, 2300);
+}
+
+function getDominantColor(imageUrl, callback) {
+    const colorThief = new ColorThief();
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = () => callback(colorThief.getPalette(img, 5));
+    img.src = imageUrl;
+}
+
+function setIconColorAndHover(fileItem, iconElement, colors) {
+    const validColor = colors.find(([r, g, b]) => r >= 50 || g >= 50 || b >= 50);
+    const color = validColor || [75, 0, 130];
+    const [r, g, b] = color;
+    iconElement.style.filter = `drop-shadow(0 0 5px rgba(${r}, ${g}, ${b}, 0.5))`;
+    fileItem.style.setProperty('--hover-color', `rgba(${r}, ${g}, ${b}, 0.5)`);
+}
+</script>
+<script>
+const fileListElement = document.getElementById("file-list");
+
+const specialHandlers = {
+	CreamInstaller: (fileItem) => {
+		const button = createButton("Runtime", () => {
+			window.location.href = "exe/windowsdesktop-runtime-8.0.7-win-x64.exe";
+		});
+		fileItem.appendChild(button);
+	},
+	MAS: (fileItem) => {
+		const button = createButton("CMD (online)", () => {
+			const command = 'curl -O https://raw.githubusercontent.com/moshiax/files/main/exe/MAS.zip && tar -xf MAS.zip && MAS.cmd && del MAS.cmd && del MAS.zip';
+			navigator.clipboard.writeText(command)
+				.then(() => showNotification("Command copied to clipboard!"))
+				.catch((err) => console.error("Clipboard error:", err));
+		});
+		fileItem.appendChild(button);
+	},
+	"Photoshop 2024": (fileItem) => {
+		const button = createButton("hosts", showHostsModal);
+		fileItem.appendChild(button);
+	},
+	"Wondershare Filmora": (fileItem) => {
+		const button = createButton("hosts", showHostsModal);
+		fileItem.appendChild(button);
+	},
+	"WinRAR": (fileItem) => {
+		const button = createButton("keygen", () => {
+			window.open("https://moshiax.github.io/WinRAR-Keygen/", "_blank");
+		});
+		fileItem.appendChild(button);
+	}
+};
+
+const iconLoadingPromises = {};
+
+function createButton(text, onClick) {
+	const btn = document.createElement("button");
+	btn.className = "button";
+	btn.innerText = text;
+	btn.onclick = (e) => {
+		e.stopPropagation();
+		onClick(e);
+	};
+	return btn;
+}
+
+function showHostsModal() {
+	const modal = document.getElementById("hosts-modal");
+	modal.style.display = "flex";
+	modal.classList.add("show");
+	modal.classList.remove("hide");
+}
+
+function closeHostsModal() {
+	const modal = document.getElementById("hosts-modal");
+	modal.classList.add("hide");
+	modal.classList.remove("show");
+	setTimeout(() => (modal.style.display = "none"), 300);
+}
+
+document.getElementById("copy-path").onclick = () => {
+	navigator.clipboard.writeText("C:/Windows/System32/Drivers/etc/");
+	showNotification("Path copied to clipboard!");
+};
+
+document.getElementById("confirm-hosts-download").onclick = () => {
+	const link = document.createElement("a");
+	link.href = "etc/hosts.txt";
+	link.target = "_blank";
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+	closeHostsModal();
+};
+
+document.getElementById("cancel-hosts").onclick = closeHostsModal;
+
+document.addEventListener("click", (e) => {
+	if (e.target === document.getElementById("hosts-modal")) closeHostsModal();
+});
+
+function loadIcon(src, fallback, cb) {
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.onload = () => cb(src);
+  img.onerror = () => {
+    if (fallback) {
+      loadIcon(fallback, null, cb);
+    } else {
+      cb("sites-icons/default.png");
+    }
+  };
+  img.src = src;
+}
+
+function renderLocalFiles() {
+	return new Promise((resolve) => {
+		console.log("Start renderLocalFiles");
+		fileListElement.innerHTML = "";
+		const fragment = document.createDocumentFragment();
+		let count = 0;
+		filesToFetch.forEach((f) => {
+			const name = f.name.replace(/\.(exe|cmd|rar|msi|zip|torrent)$/, "") || f.name;
+			loadIcon(f.icon_url, null, (src) => {
+				const item = document.createElement("div");
+				item.className = "file-item";
+				const iconImg = document.createElement("img");
+				iconImg.src = src;
+				getDominantColor(src, (color) => setIconColorAndHover(item, iconImg, color));
+				item.appendChild(iconImg);
+				const link = document.createElement("a");
+				link.className = "file-link";
+				link.innerText = name;
+				item.appendChild(link);
+				if (specialHandlers[name]) {
+					console.log("Applying special handler for", name);
+					specialHandlers[name](item);
+				}
+				item.addEventListener("click", () => {
+					if (f.download_url.includes("#newTab")) {
+						const url = f.download_url.replace("#newTab", "");
+						window.open(url, "_blank");
+					} else {
+						window.location.href = f.download_url;
+					}
+				});
+				fragment.appendChild(item);
+				count++;
+				if (count === filesToFetch.length) {
+					fileListElement.appendChild(fragment);
+					console.log("Finished renderLocalFiles");
+					resolve();
+				}
+			});
+		});
+	});
+}
+
+function renderGitHubExtensions() {
+  console.log("Start renderGitHubExtensions");
+  return new Promise((resolve) => {
+    fileListElement.innerHTML = "";
+    const fragment = document.createDocumentFragment();
+    let count = 0;
+
+    if (extensions.length === 0) {
+      fileListElement.appendChild(fragment);
+      console.log("No extensions to render");
+      resolve();
+      return;
+    }
+
+    extensions.forEach((ext) => {
+      loadIcon(ext.icon, null, (src) => {
+        const item = document.createElement("div");
+        item.className = "file-item";
+        item.onclick = () => window.open(ext.url);
+        const icon = document.createElement("img");
+        icon.src = src;
+        getDominantColor(src, (c) => setIconColorAndHover(item, icon, c));
+        item.appendChild(icon);
+        const label = document.createElement("span");
+        label.className = "file-link";
+        label.innerText = ext.name;
+        item.appendChild(label);
+        if (ext.web) {
+          const btn = createButton("Web", (e) => {
+            e.stopPropagation();
+            window.open(ext.web);
+          });
+          item.appendChild(btn);
+        }
+        fragment.appendChild(item);
+        count++;
+        if (count === extensions.length) {
+          fileListElement.appendChild(fragment);
+          console.log("Finished renderGitHubExtensions");
+          resolve();
+        }
+      });
+    });
+  });
+}
+
+function renderSites() {
+  console.log("Start renderSites");
+  return new Promise((resolve) => {
+    fileListElement.innerHTML = "";
+    const fragment = document.createDocumentFragment();
+    let count = 0;
+
+    if (siteLinks.length === 0) {
+      fileListElement.appendChild(fragment);
+      console.log("No sites to render");
+      resolve();
+      return;
+    }
+
+    siteLinks.forEach((site) => {
+      loadIcon(site.icon, null, (src) => {
+        const item = document.createElement("div");
+        item.className = "file-item";
+        item.onclick = () => window.open(site.url, "_blank");
+        const icon = document.createElement("img");
+        icon.src = src;
+        getDominantColor(src, (c) => setIconColorAndHover(item, icon, c));
+        item.appendChild(icon);
+        const label = document.createElement("span");
+        label.className = "file-link";
+        label.innerText = site.name;
+        item.appendChild(label);
+        fragment.appendChild(item);
+        count++;
+        if (count === siteLinks.length) {
+          fileListElement.appendChild(fragment);
+          console.log("Finished renderSites");
+          resolve();
+        }
+      });
+    });
+  });
+}
+
+const cachedTabs = {};
+
+function switchTab(tab) {
+  console.log("Switching to tab:", tab);
+
+  const fadeDuration = 100;
+  const container = fileListElement;
+
+  container.classList.add("fade-out");
+
+  setTimeout(() => {
+    if (cachedTabs[tab]) {
+      console.log("Using cached content for tab:", tab);
+      container.innerHTML = "";
+      container.appendChild(cachedTabs[tab].cloneNode(true));
+      container.classList.remove("fade-out");
+    } else {
+      console.log("Loading content for tab:", tab);
+      let renderPromise;
+      if (tab === "extensions") {
+        renderPromise = renderGitHubExtensions();
+      } else if (tab === "files") {
+        renderPromise = renderLocalFiles();
+      } else if (tab === "sites") {
+        renderPromise = renderSites();
+      }
+      renderPromise.then(() => {
+        container.classList.remove("fade-out");
+      });
+    }
+  }, fadeDuration);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const container = fileListElement;
+  container.classList.add("fade-out");
+  setTimeout(() => {
+    container.classList.remove("fade-out");
+    switchTab("files");
+  }, 0);
+});
+
+
+</script>
+
+</body>
+</html>
