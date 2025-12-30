@@ -10,24 +10,24 @@
 <body>
 
 <div class="button-container">
-    <button class="button-half left-button" onclick="switchTab('extensions')">Extensions</button>
-    <button class="button-half middle-button" onclick="switchTab('files')">Files</button>
-    <button class="button-half right-button" onclick="switchTab('sites')">Sites</button>
+	<button class="button-half left-button" onclick="switchTab('extensions')">Extensions</button>
+	<button class="button-half middle-button" onclick="switchTab('files')">Files</button>
+	<button class="button-half right-button" onclick="switchTab('sites')">Sites</button>
 </div>
 
 <div id="notification" class="notification"><p></p></div>
 
 <div id="app">
-    <div id="file-list"></div>
+	<div id="file-list"></div>
 </div>
 
 <div id="hosts-modal" class="modal-container">
-    <div class="modal-content">
-        <h2>Hosts</h2>
-        <button id="copy-path">Copy Path</button>
-        <button id="cancel-hosts">Cancel</button>
-        <button id="confirm-hosts-download">Download Hosts</button>
-    </div>
+	<div class="modal-content">
+		<h2>Hosts</h2>
+		<button id="copy-path">Copy Path</button>
+		<button id="cancel-hosts">Cancel</button>
+		<button id="confirm-hosts-download">Download Hosts</button>
+	</div>
 </div>
 <script>
 const filesToFetch = [
@@ -60,22 +60,22 @@ const filesToFetch = [
 	{ name: "Photoshop 2024", download_url: "exe/Photoshop 2024.torrent", icon_url: "exe-icons/Photoshop 2024.png" },
 	{ name: "Wondershare Filmora", download_url: "exe/Wondershare Filmora.torrent", icon_url: "exe-icons/Wondershare Filmora.png" },
 	{ name: "WinHex", download_url: "exe/WinHex.zip", icon_url: "exe-icons/WinHex.png" },
-	{ name: "Forensics", download_url: "exe/Forensics.exe", icon_url: "exe-icons/Forensics.png" },
+	{ name: "Forensics", download_url: "exe/Forensics.zip", icon_url: "exe-icons/Forensics.png" },
 	{ name: "Cheat Engine", download_url: "exe/Cheat Engine.zip", icon_url: "exe-icons/Cheat Engine.png" },
 	{ name: "adb", download_url: "exe/adb.zip", icon_url: "exe-icons/adb.png"}
 ];
 
 const extensions = [
-  { name: "AdGuard", url: "extensions/AdGuard.crx", web: "https://chromewebstore.google.com/detail/adguard-adblocker/bgnkhhnnamicmpeenaelnjfhikgbkllg", icon: "extensions-icons/AdGuard.png" },
-  { name: "Linguist", url: "extensions/Linguist.crx", web: "https://chromewebstore.google.com/detail/gbefmodhlophhakmoecijeppjblibmie", icon: "extensions-icons/Linguist.png" },
-  { name: "SaveFrom", url: "extensions/SaveFrom.crx", web: "https://en1.savefrom.net/2ol/", icon: "extensions-icons/SaveFrom.png" },
-  { name: "ReplicateUI", url: "extensions/ReplicateUI.crx", web: "https://github.com/moshiax/ReplicateUI/", icon: "extensions-icons/ReplicateUI.png" },
-  { name: "SteamRedirect", url: "extensions/SteamRedirect.crx", web: "https://github.com/moshiax/SteamRedirect/", icon: "extensions-icons/SteamRedirect.png" },
-  { name: "Discord Token Login", url: "extensions/Discord%20Token%20Login.crx", web: "https://chromewebstore.google.com/detail/kfjglmgfjedhhcddpfgfogkahmenikan", icon: "extensions-icons/Discord%20Token%20Login.png" },
-  { name: "OffYTBullshit", url: "https://github.com/moshiax/Off-Youtube-Bullshit/releases/latest/download/Off-Youtube-Bullshit.crx", icon: "extensions-icons/OffYTBullshit.png" },
-  { name: "uBlock Origin", url: "extensions/uBlock%20Origin.crx", web: "https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm", icon: "extensions-icons/uBlock%20Origin.png" },
-  { name: "SponsorBlock", url: "extensions/SponsorBlock.crx", web: "https://chromewebstore.google.com/detail/sponsorblock-for-youtube/mnjggcdmjocbbbhaepdhchncahnbgone", icon: "extensions-icons/SponsorBlock.png" },
-  { name: "Get-cookies.txt", url: "https://github.com/moshiax/Get-cookies.txt-LOCALLY/releases/latest/download/Get-cookies.txt-LOCALLY.crx", icon: "extensions-icons/getcookies.png" }
+	{ name: "AdGuard", url: "extensions/AdGuard.crx", web: "https://chromewebstore.google.com/detail/adguard-adblocker/bgnkhhnnamicmpeenaelnjfhikgbkllg", icon: "extensions-icons/AdGuard.png" },
+	{ name: "Linguist", url: "extensions/Linguist.crx", web: "https://chromewebstore.google.com/detail/gbefmodhlophhakmoecijeppjblibmie", icon: "extensions-icons/Linguist.png" },
+	{ name: "SaveFrom", url: "extensions/SaveFrom.crx", web: "https://en1.savefrom.net/2ol/", icon: "extensions-icons/SaveFrom.png" },
+	{ name: "ReplicateUI", url: "extensions/ReplicateUI.crx", web: "https://github.com/moshiax/ReplicateUI/", icon: "extensions-icons/ReplicateUI.png" },
+	{ name: "SteamRedirect", url: "extensions/SteamRedirect.crx", web: "https://github.com/moshiax/SteamRedirect/", icon: "extensions-icons/SteamRedirect.png" },
+	{ name: "Discord Token Login", url: "extensions/Discord%20Token%20Login.crx", web: "https://chromewebstore.google.com/detail/kfjglmgfjedhhcddpfgfogkahmenikan", icon: "extensions-icons/Discord%20Token%20Login.png" },
+	{ name: "OffYTBullshit", url: "https://github.com/moshiax/Off-Youtube-Bullshit/releases/latest/download/Off-Youtube-Bullshit.crx", icon: "extensions-icons/OffYTBullshit.png" },
+	{ name: "uBlock Origin", url: "extensions/uBlock%20Origin.crx", web: "https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm", icon: "extensions-icons/uBlock%20Origin.png" },
+	{ name: "SponsorBlock", url: "extensions/SponsorBlock.crx", web: "https://chromewebstore.google.com/detail/sponsorblock-for-youtube/mnjggcdmjocbbbhaepdhchncahnbgone", icon: "extensions-icons/SponsorBlock.png" },
+	{ name: "Get-cookies.txt", url: "https://github.com/moshiax/Get-cookies.txt-LOCALLY/releases/latest/download/Get-cookies.txt-LOCALLY.crx", icon: "extensions-icons/getcookies.png" }
 ];
 
 const siteLinks = [
@@ -95,30 +95,30 @@ const siteLinks = [
 </script>
 <script>
 function showNotification(message) {
-    const n = document.getElementById('notification');
-    n.querySelector('p').innerText = message;
-    n.style.display = 'block';
-    n.style.animation = 'fadeIn 0.5s';
-    setTimeout(() => {
-        n.style.animation = 'fadeOut 0.5s';
-        setTimeout(() => n.style.display = 'none', 500);
-    }, 2300);
+	const n = document.getElementById('notification');
+	n.querySelector('p').innerText = message;
+	n.style.display = 'block';
+	n.style.animation = 'fadeIn 0.5s';
+	setTimeout(() => {
+		n.style.animation = 'fadeOut 0.5s';
+		setTimeout(() => n.style.display = 'none', 500);
+	}, 2300);
 }
 
 function getDominantColor(imageUrl, callback) {
-    const colorThief = new ColorThief();
-    const img = new Image();
-    img.crossOrigin = 'Anonymous';
-    img.onload = () => callback(colorThief.getPalette(img, 5));
-    img.src = imageUrl;
+	const colorThief = new ColorThief();
+	const img = new Image();
+	img.crossOrigin = 'Anonymous';
+	img.onload = () => callback(colorThief.getPalette(img, 5));
+	img.src = imageUrl;
 }
 
 function setIconColorAndHover(fileItem, iconElement, colors) {
-    const validColor = colors.find(([r, g, b]) => r >= 50 || g >= 50 || b >= 50);
-    const color = validColor || [75, 0, 130];
-    const [r, g, b] = color;
-    iconElement.style.filter = `drop-shadow(0 0 5px rgba(${r}, ${g}, ${b}, 0.5))`;
-    fileItem.style.setProperty('--hover-color', `rgba(${r}, ${g}, ${b}, 0.5)`);
+	const validColor = colors.find(([r, g, b]) => r >= 50 || g >= 50 || b >= 50);
+	const color = validColor || [75, 0, 130];
+	const [r, g, b] = color;
+	iconElement.style.filter = `drop-shadow(0 0 5px rgba(${r}, ${g}, ${b}, 0.5))`;
+	fileItem.style.setProperty('--hover-color', `rgba(${r}, ${g}, ${b}, 0.5)`);
 }
 </script>
 <script>
@@ -205,55 +205,39 @@ document.addEventListener("click", (e) => {
 });
 
 function loadIcon(src, fallback, cb) {
-  const img = new Image();
-  img.crossOrigin = "anonymous";
-  img.onload = () => cb(src);
-  img.onerror = () => {
-    if (fallback) {
-      loadIcon(fallback, null, cb);
-    } else {
-      cb("sites-icons/default.png");
-    }
-  };
-  img.src = src;
+	const img = new Image();
+	img.crossOrigin = "anonymous";
+	img.onload = () => cb(src);
+	img.onerror = () => {
+		if (fallback) {
+			loadIcon(fallback, null, cb);
+		} else {
+			cb("sites-icons/default.png");
+		}
+	};
+	img.src = src;
 }
 
-function renderLocalFiles() {
+function renderList({ items, buildItem }) {
 	return new Promise((resolve) => {
-		console.log("Start renderLocalFiles");
 		fileListElement.innerHTML = "";
 		const fragment = document.createDocumentFragment();
 		let count = 0;
-		filesToFetch.forEach((f) => {
-			const name = f.name.replace(/\.(exe|cmd|rar|msi|zip|torrent)$/, "") || f.name;
-			loadIcon(f.icon_url, null, (src) => {
-				const item = document.createElement("div");
-				item.className = "file-item";
-				const iconImg = document.createElement("img");
-				iconImg.src = src;
-				getDominantColor(src, (color) => setIconColorAndHover(item, iconImg, color));
-				item.appendChild(iconImg);
-				const link = document.createElement("a");
-				link.className = "file-link";
-				link.innerText = name;
-				item.appendChild(link);
-				if (specialHandlers[name]) {
-					console.log("Applying special handler for", name);
-					specialHandlers[name](item);
-				}
-				item.addEventListener("click", () => {
-					if (f.download_url.includes("#newTab")) {
-						const url = f.download_url.replace("#newTab", "");
-						window.open(url, "_blank");
-					} else {
-						window.location.href = f.download_url;
-					}
-				});
+
+		if (items.length === 0) {
+			fileListElement.appendChild(fragment);
+			resolve();
+			return;
+		}
+
+		items.forEach((data) => {
+			loadIcon(data.icon || data.icon_url, null, (src) => {
+				const item = buildItem(data, src);
 				fragment.appendChild(item);
+
 				count++;
-				if (count === filesToFetch.length) {
+				if (count === items.length) {
 					fileListElement.appendChild(fragment);
-					console.log("Finished renderLocalFiles");
 					resolve();
 				}
 			});
@@ -261,133 +245,140 @@ function renderLocalFiles() {
 	});
 }
 
+function renderLocalFiles() {
+	return renderList({
+		items: filesToFetch,
+		buildItem: (f, src) => {
+			const name = f.name.replace(/\.(exe|cmd|rar|msi|zip|torrent)$/, "") || f.name;
+
+			const item = document.createElement("div");
+			item.className = "file-item";
+
+			const icon = document.createElement("img");
+			icon.src = src;
+			getDominantColor(src, (c) => setIconColorAndHover(item, icon, c));
+			item.appendChild(icon);
+
+			const link = document.createElement("a");
+			link.className = "file-link";
+			link.innerText = name;
+			item.appendChild(link);
+
+			if (specialHandlers[name]) {
+				specialHandlers[name](item);
+			}
+
+			item.onclick = () => {
+				if (f.download_url.includes("#newTab")) {
+					window.open(f.download_url.replace("#newTab", ""), "_blank");
+				} else {
+					window.location.href = f.download_url;
+				}
+			};
+
+			return item;
+		}
+	});
+}
+
 function renderGitHubExtensions() {
-  console.log("Start renderGitHubExtensions");
-  return new Promise((resolve) => {
-    fileListElement.innerHTML = "";
-    const fragment = document.createDocumentFragment();
-    let count = 0;
+	return renderList({
+		items: extensions,
+		buildItem: (ext, src) => {
+			const item = document.createElement("div");
+			item.className = "file-item";
+			item.onclick = () => window.open(ext.url);
 
-    if (extensions.length === 0) {
-      fileListElement.appendChild(fragment);
-      console.log("No extensions to render");
-      resolve();
-      return;
-    }
+			const icon = document.createElement("img");
+			icon.src = src;
+			getDominantColor(src, (c) => setIconColorAndHover(item, icon, c));
+			item.appendChild(icon);
 
-    extensions.forEach((ext) => {
-      loadIcon(ext.icon, null, (src) => {
-        const item = document.createElement("div");
-        item.className = "file-item";
-        item.onclick = () => window.open(ext.url);
-        const icon = document.createElement("img");
-        icon.src = src;
-        getDominantColor(src, (c) => setIconColorAndHover(item, icon, c));
-        item.appendChild(icon);
-        const label = document.createElement("span");
-        label.className = "file-link";
-        label.innerText = ext.name;
-        item.appendChild(label);
-        if (ext.web) {
-          const btn = createButton("Web", (e) => {
-            e.stopPropagation();
-            window.open(ext.web);
-          });
-          item.appendChild(btn);
-        }
-        fragment.appendChild(item);
-        count++;
-        if (count === extensions.length) {
-          fileListElement.appendChild(fragment);
-          console.log("Finished renderGitHubExtensions");
-          resolve();
-        }
-      });
-    });
-  });
+			const label = document.createElement("span");
+			label.className = "file-link";
+			label.innerText = ext.name;
+			item.appendChild(label);
+
+			if (ext.web) {
+				const btn = createButton("Web", (e) => {
+					e.stopPropagation();
+					window.open(ext.web);
+				});
+				item.appendChild(btn);
+			}
+
+			return item;
+		}
+	});
 }
 
 function renderSites() {
-  console.log("Start renderSites");
-  return new Promise((resolve) => {
-    fileListElement.innerHTML = "";
-    const fragment = document.createDocumentFragment();
-    let count = 0;
+	return renderList({
+		items: siteLinks,
+		buildItem: (site, src) => {
+			const item = document.createElement("div");
+			item.className = "file-item";
+			item.onclick = () => window.open(site.url, "_blank");
 
-    if (siteLinks.length === 0) {
-      fileListElement.appendChild(fragment);
-      console.log("No sites to render");
-      resolve();
-      return;
-    }
+			const icon = document.createElement("img");
+			icon.src = src;
+			getDominantColor(src, (c) => setIconColorAndHover(item, icon, c));
+			item.appendChild(icon);
 
-    siteLinks.forEach((site) => {
-      loadIcon(site.icon, null, (src) => {
-        const item = document.createElement("div");
-        item.className = "file-item";
-        item.onclick = () => window.open(site.url, "_blank");
-        const icon = document.createElement("img");
-        icon.src = src;
-        getDominantColor(src, (c) => setIconColorAndHover(item, icon, c));
-        item.appendChild(icon);
-        const label = document.createElement("span");
-        label.className = "file-link";
-        label.innerText = site.name;
-        item.appendChild(label);
-        fragment.appendChild(item);
-        count++;
-        if (count === siteLinks.length) {
-          fileListElement.appendChild(fragment);
-          console.log("Finished renderSites");
-          resolve();
-        }
-      });
-    });
-  });
+			const label = document.createElement("span");
+			label.className = "file-link";
+			label.innerText = site.name;
+			item.appendChild(label);
+
+			return item;
+		}
+	});
 }
 
 const cachedTabs = {};
 
 function switchTab(tab) {
-  console.log("Switching to tab:", tab);
+	console.log("Switching to tab:", tab);
 
-  const fadeDuration = 100;
-  const container = fileListElement;
+	const fadeDuration = 100;
+	const container = fileListElement;
 
-  container.classList.add("fade-out");
+	container.classList.add("fade-out");
 
-  setTimeout(() => {
-    if (cachedTabs[tab]) {
-      console.log("Using cached content for tab:", tab);
-      container.innerHTML = "";
-      container.appendChild(cachedTabs[tab].cloneNode(true));
-      container.classList.remove("fade-out");
-    } else {
-      console.log("Loading content for tab:", tab);
-      let renderPromise;
-      if (tab === "extensions") {
-        renderPromise = renderGitHubExtensions();
-      } else if (tab === "files") {
-        renderPromise = renderLocalFiles();
-      } else if (tab === "sites") {
-        renderPromise = renderSites();
-      }
-      renderPromise.then(() => {
-        container.classList.remove("fade-out");
-      });
-    }
-  }, fadeDuration);
+	setTimeout(() => {
+		if (cachedTabs[tab]) {
+			console.log("Using cached content for tab:", tab);
+			container.innerHTML = "";
+			container.appendChild(cachedTabs[tab].cloneNode(true));
+			container.classList.remove("fade-out");
+		} else {
+			console.log("Loading content for tab:", tab);
+			let renderPromise;
+
+			if (tab === "extensions") {
+				renderPromise = renderGitHubExtensions();
+			} else if (tab === "files") {
+				renderPromise = renderLocalFiles();
+			} else if (tab === "sites") {
+				renderPromise = renderSites();
+			}
+
+			renderPromise.then(() => {
+				container.classList.remove("fade-out");
+			});
+		}
+	}, fadeDuration);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const container = fileListElement;
-  container.classList.add("fade-out");
-  setTimeout(() => {
-    container.classList.remove("fade-out");
-    switchTab("files");
-  }, 0);
-});
+	const container = fileListElement;
+	container.classList.add("fade-out");
 
+	setTimeout(() => {
+		container.classList.remove("fade-out");
+		switchTab("files");
+	}, 0);
+});
 
 </script>
 
