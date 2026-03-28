@@ -55,12 +55,12 @@ const filesToFetch = [
 	{ name: "TreeSize", download_url: "exe/TreeSize.exe", icon_url: "exe-icons/TreeSize.png" },
 	{ name: "Win 10 Tweaker", download_url: "exe/Win 10 Tweaker.exe", icon_url: "exe-icons/Win 10 Tweaker.png" },
 	{ name: "Windows Terminal", download_url: "exe/Windows Terminal.zip", icon_url: "exe-icons/Windows Terminal.png" },
-	{ name: "WinRAR", download_url: "https://win-rar.com/postdownload.html#newTab", icon_url: "exe-icons/WinRAR.png" },
+	{ name: "WinRAR", download_url: "exe/winrar-x64-720.exe", icon_url: "exe-icons/WinRAR.png" },
 	{ name: "Photoshop 2024", download_url: "exe/Photoshop 2024.torrent", icon_url: "exe-icons/Photoshop 2024.png" },
 	{ name: "Wondershare Filmora", download_url: "exe/Wondershare Filmora.torrent", icon_url: "exe-icons/Wondershare Filmora.png" },
 	{ name: "WinHex", download_url: "exe/WinHex.zip", icon_url: "exe-icons/WinHex.png" },
 	{ name: "Forensics", download_url: "exe/Forensics.zip", icon_url: "exe-icons/Forensics.png" },
-	{ name: "PrivaZer", download_url: "https://privazer.com/en/PrivaZer.exe", icon_url: "exe-icons/PrivaZer.png" },
+	{ name: "PrivaZer", download_url: "exe/PrivaZer.exe", icon_url: "exe-icons/PrivaZer.png" },
 	{ name: "Cheat Engine", download_url: "exe/Cheat Engine.zip", icon_url: "exe-icons/Cheat Engine.png" },
 	{ name: "adb", download_url: "exe/adb.zip", icon_url: "exe-icons/adb.png"}
 ];
@@ -153,7 +153,13 @@ const specialHandlers = {
 			window.open("https://moshiax.github.io/WinRAR-Keygen/", "_blank");
 		});
 		fileItem.appendChild(button);
-	}
+	},
+	PrivaZer: (fileItem) => {
+		const button = createButton("Config", () => {
+			window.location.href = "etc/PrivaZer.ini";
+		});
+		fileItem.appendChild(button);
+	},
 };
 
 const iconLoadingPromises = {};
