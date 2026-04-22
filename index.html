@@ -159,6 +159,12 @@ const specialHandlers = {
 		});
 		fileItem.appendChild(button);
 	},
+	"Steam Achievement Manager": (fileItem) => {
+		const button = createButton("Online", () => {
+			window.open("https://github.com/gibbed/SteamAchievementManager/releases/", "_blank");
+		});
+		fileItem.appendChild(button);
+	},
 };
 
 const iconLoadingPromises = {};
